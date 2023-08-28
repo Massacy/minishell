@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 06:01:01 by imasayos          #+#    #+#             */
-/*   Updated: 2023/08/28 06:40:54 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/08/28 14:57:58 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,11 @@ int main(int argc, char const *argv[])
 		{
 			if (split[1] == NULL)
 				printf("\n");
+			else if (ft_strlen(split[1]) == 2 && ft_strncmp(split[1],"-n", 2) == 0)
+				if (split[2] == NULL)
+					printf("");
+				else
+					printf("%s", &prompt[7]);
 			else
 				printf("%s\n", &prompt[5]);
 		}
