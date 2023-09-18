@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 06:01:01 by imasayos          #+#    #+#             */
-/*   Updated: 2023/09/16 04:14:38 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/09/18 17:45:24 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	fatal_error(const char *msg) __attribute__((noreturn));
 void	fatal_error(const char *msg)
 {
 	dprintf(STDERR_FILENO, "Fatal Error: %s\n", msg);
-	exit(1);
+	exit(EXIT_FAILURE);
 }
 
 // 子プロセスで*lineに入っているコマンドを実行する。
@@ -112,10 +112,12 @@ int main(int argc, char const *argv[])
 	char *prompt;
 	char **split;
 	// char path[1024];
-
+	int exit_status;
+	
 	(void)argc;
 	(void)argv;
 	prompt = NULL;
+	exit_status = 0;
 	while (1)
 	{
 		prompt = readline("$> ");
@@ -162,7 +164,13 @@ int main(int argc, char const *argv[])
 		char *res;
 		res = search_path(prompt);
 		if (res)
-			interpret(res);
+			exit_status = interpret(res);
+		else
+		{
+			printf("command not found");
+			// fatal_error("command not found");
+			exit_status = 127;
+		}
 		free(res);
 
 		free(prompt);
@@ -170,5 +178,5 @@ int main(int argc, char const *argv[])
 	}
 	// printf("bye~!\n");
 	// return 0;
-	exit(0);
+	exit(exit_status);
 }
