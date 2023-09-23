@@ -6,19 +6,12 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 06:01:01 by imasayos          #+#    #+#             */
-/*   Updated: 2023/09/18 17:45:24 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/09/23 18:47:05 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <stdio.h>
-#include <string.h>
 
-#define PATH_MAX 1024
 
 int free_split(char **split)
 {
@@ -38,25 +31,130 @@ void	fatal_error(const char *msg) __attribute__((noreturn));
 
 void	fatal_error(const char *msg)
 {
+	dprintf(STDERR_FILENO, "\x1b[31m");
 	dprintf(STDERR_FILENO, "Fatal Error: %s\n", msg);
+	dprintf(STDERR_FILENO, "\x1b[39m");
 	exit(EXIT_FAILURE);
 }
 
+void command_not_found_error(const char *msg) __attribute__((noreturn));
+
+void command_not_found_error(const char *cmd)
+{
+	dprintf(STDERR_FILENO, "\x1b[31m");
+	dprintf(STDERR_FILENO, "Command not found: \"%s\" does not found\n", cmd);
+	dprintf(STDERR_FILENO, "\x1b[39m");
+	exit(127);
+}
+
+
+/*
+	t_tokenの線形リストをchar**に変換する。
+	・線形リストの要素数を数える。
+	・char**をcallocで確保する。
+	・線形リストを順番に回して、char**にwordをコピーしていく。
+	・char**の最後にNULLを入れる。
+	※ wordは線形リスト内のポインタを指しているので、このargv使用中はtokをfreeしてはいけない。
+*/
+char **token_list_to_argv(t_token *tok)
+{
+	char **argv;
+	int cnt;
+	int i;
+	t_token *cur;
+
+	cnt = 0;
+	cur = tok;
+	while (cur->word != NULL)
+	{
+		cnt++;
+		cur = cur->next;
+	}
+	argv = calloc(cnt + 1, sizeof(char *));
+	if (argv == NULL)
+		fatal_error("calloc");
+	
+	cur = tok;
+	i = -1;
+	while(++i < cnt)
+	{
+		argv[i] = cur->word;
+		cur = cur->next;
+	}
+	argv[i] = NULL;
+	return (argv);
+}
+
+void echo_args(char **split)
+{
+	int i;
+
+	i = 0;
+	while (split[i] != NULL)
+	{
+		printf("%s", split[i]);
+		if (split[i+1] != NULL)
+			printf(" ");
+		i++;
+	}
+}
+
+void exec_built_in(char **split)
+{
+	// printf("[test start]------exec_built_in------\n");
+	// int i;
+	// i = 0;
+	// while (split[i] != NULL)
+	// {
+	// 	printf("%s\n", split[i]);
+	// 	i++;
+	// }
+	// printf("[test end]------exec_built_in------\n");
+	
+	if (split[0] != NULL)
+	{
+		if (ft_strlen(split[0]) == 4 && ft_strncmp(split[0], "echo", 4) == 0)
+		{
+			if (split[1] == NULL)
+				printf("\n");
+			else if (ft_strlen(split[1]) == 2 && ft_strncmp(split[1],"-n", 2) == 0)
+				echo_args(&split[2]);
+			else
+			{
+				echo_args(&split[1]);
+				printf("\n");
+			}
+		}
+		else
+			printf("this is not echo comamnd\n");
+	}
+}
+
 // 子プロセスで*lineに入っているコマンドを実行する。
-int	interpret(char *line)
+// int	interpret(char *line)
+int	interpret(t_token *tok)
 {
 	extern char	**environ;
-	char		*argv[] = {line, NULL}; // 今は一つの塊だけ対応。argvは可変長なのでmallocして、そこに引数を入れていく必要がある。
+	// t_token		*tok;
+	char **argv;	
+	// char		*argv[] = {line, NULL}; // 今は一つの塊だけ対応。argvは可変長なのでmallocして、そこに引数を入れていく必要がある。
 	pid_t		pid;
 	int			wstatus;
 
+	argv = token_list_to_argv(tok);
 	pid = fork();
 	if (pid < 0)
 		fatal_error("fork");
 	else if (pid == 0)
 	{
 		// child process
-		execve(line, argv, environ);
+		// execve(line, argv, environ);
+		char *res;
+		res = search_path(argv[0]);
+		if (res)
+			execve(res, argv, environ);
+		else
+			command_not_found_error(argv[0]);
 		fatal_error("execve");
 	}
 	else
@@ -110,7 +208,7 @@ char	*search_path(const char *filename)
 int main(int argc, char const *argv[])
 {
 	char *prompt;
-	char **split;
+	// char **split;
 	// char path[1024];
 	int exit_status;
 	
@@ -125,56 +223,31 @@ int main(int argc, char const *argv[])
 			break;
 		if (ft_strlen(prompt) == 0)
 			continue;
-		split = ft_split(prompt, ' ');
+		// split = ft_split(prompt, ' '); -> tokenizeする。
 		add_history(prompt);
-		// if (ft_strlen(prompt) == 4 && ft_strncmp(prompt, "exit", 4) == 0)
-		// {
-		// 	free(prompt);
-		// 	free_split(split);
-		// 	break;
-		// }
-		// else if (ft_strlen(split[0]) == 4 && ft_strncmp(split[0], "echo", 4) == 0)
-		// {
-		// 	if (split[1] == NULL)
-		// 		printf("\n");
-		// 	else if (ft_strlen(split[1]) == 2 && ft_strncmp(split[1],"-n", 2) == 0)
-		// 		if (split[2] == NULL)
-		// 			printf("");
-		// 		else
-		// 			printf("%s", &prompt[7]);
-		// 	else
-		// 		printf("%s\n", &prompt[5]);
-		// }
-		// else if (ft_strlen(prompt) == 3 && ft_strncmp(prompt, "pwd", 3) == 0)
-		// {
-		// 	if (getcwd(path, sizeof(path)) != NULL)
-		// 		printf("%s\n", path);
-		// 	else
-		// 	{
-		// 		perror("getcwd() error :");
-		// 		return (1);
-		// 	}
-		// } 
-		// else if (ft_strlen(prompt) == 2 && ft_strncmp(prompt, "ls", 2) == 0)
-		// {
-		// 	interpret("/bin/ls");
-		// }
+		// char *res;
+		// char *line;
+		t_token *tok;
+
+		tok = tokenize(prompt);
+		exit_status = interpret(tok);
+		// debug : printf("exit_status : %d\n", exit_status);
+		// res = search_path(tok->word); // 一旦先頭のtokのみ実行。
+
+		// // exit_status = interpret(prompt);
+
+		// res = search_path(prompt);
+		// if (res)
+		// 	exit_status = interpret(tok);
 		// else
-			// printf("builtin not found: %s\n", prompt);
-		char *res;
-		res = search_path(prompt);
-		if (res)
-			exit_status = interpret(res);
-		else
-		{
-			printf("command not found");
-			// fatal_error("command not found");
-			exit_status = 127;
-		}
-		free(res);
+		// {
+		// 	printf("command not found\n");
+		// 	exit_status = 127;
+		// }
+		// free(res);
 
 		free(prompt);
-		free_split(split);
+		// free_split(split);
 	}
 	// printf("bye~!\n");
 	// return 0;
