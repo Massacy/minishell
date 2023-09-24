@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 06:01:01 by imasayos          #+#    #+#             */
-/*   Updated: 2023/09/23 18:47:05 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/09/25 00:36:05 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,6 +230,14 @@ int main(int argc, char const *argv[])
 		t_token *tok;
 
 		tok = tokenize(prompt);
+		// int i = 0;
+		// while (tok->word != NULL)
+		// {
+		// 	printf("[%d]tok->word : %s\n", i, tok->word);
+		// 	tok = tok->next;
+		// 	i++;
+		// }
+		expand(tok);
 		exit_status = interpret(tok);
 		// debug : printf("exit_status : %d\n", exit_status);
 		// res = search_path(tok->word); // 一旦先頭のtokのみ実行。
