@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/09/23 18:19:30 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/09/23 19:20:18 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@
 # include <sys/types.h>
 # include <unistd.h>
 
-#define SINGLE_QUOTE_CHAR '\''
+# define SINGLE_QUOTE_CHAR '\''
+# define DOUBLE_QUOTE_CHAR '\"'
 
 typedef enum e_token_kind
 {
@@ -47,8 +48,12 @@ typedef struct s_token
 t_token					*tokenize(char *line);
 
 // minishell.c
-void fatal_error(const char *msg);
-void expand(t_token *tok);
-char *search_path(const char *filename);
+void					fatal_error(const char *msg);
+void					expand(t_token *tok);
+char					*search_path(const char *filename);
+
+// tokenizer.c
+bool					is_metacharacter(char c);
+t_token *new_token(char *word, t_token_kind kind);
 
 #endif

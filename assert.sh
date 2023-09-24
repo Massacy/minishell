@@ -1,7 +1,7 @@
 #!/bin/bash
 assert() {
   # テストしようとしている内容をprint
-	printf '%-30s:' "\"$1\""
+	printf '%-30s:' "$1"
 
 	# bashの出力をcmpに保存
 	echo -n -e "$1" | bash >cmp 2>&-
@@ -13,13 +13,13 @@ assert() {
 	actual=$?
 
 	# bashとminishellの出力を比較
-	diff cmp out >/dev/null && echo -n '  diff OK' || echo -n '  diff NG'
+	diff cmp out >/dev/null && echo -ne '  diff \x1b[32mOK\x1b[39m' || echo -ne '  diff \x1b[31mNG\x1b[39m'
 
 	# bashとminishellのexit statusを比較
 	if [ "$actual" = "$expected" ]; then
-		echo -n '  status OK'
+		echo -ne '  status \x1b[32mOK\x1b[39m'
 	else
-		echo -n "  status NG, expected $expected but got $actual"
+		echo -ne "  status \x1b[31mNG\x1b[39m, expected $expected but got $actual"
 	fi
 	echo
 }
@@ -37,3 +37,16 @@ assert 'ls'
 
 assert 'a.out'
 assert 'nosuchfile'
+
+
+assert 'echo -n hello'
+
+# assert 'echo "hello      world"'
+
+assert 'echo "hello world"'
+assert 'echo "'hello world'"' # これが正常動作しない $1を$*に変えると動く。
+assert 'echo '"hello world"''
+assert 'echo "'"hello world"'"'
+assert 'echo '"'hello world'"''
+
+assert 'echo "'hello'" "world"'
