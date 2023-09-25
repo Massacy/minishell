@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/09/23 19:20:18 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/09/25 14:54:16 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,18 @@ char					*search_path(const char *filename);
 // tokenizer.c
 bool					is_metacharacter(char c);
 t_token *new_token(char *word, t_token_kind kind);
+
+// error.c
+void fatal_error(const char *msg) __attribute__((noreturn));;
+void assert_error(const char *msg) __attribute__((noreturn));;
+void todo(const char *msg) __attribute__((noreturn));;
+// void command_not_found_error(const char *cmd);
+void err_exit(const char *location, const char *msg, int status) __attribute__((noreturn));;
+
+
+
+//destructor.c
+void free_tok(t_token *tok);
+void free_argv(char **argv);
 
 #endif

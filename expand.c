@@ -32,27 +32,9 @@ void	quote_removal(t_token *tok)
 		return ;
 	p = tok->word;
 	new_word = NULL;
-	// int sq = 0;
-	// int dq = 0;
 
 	while (*p && !is_metacharacter(*p))
 	{
-		// if (*p == SINGLE_QUOTE_CHAR || *p == DOUBLE_QUOTE_CHAR)
-		// {
-		// 	if (*p == SINGLE_QUOTE_CHAR)
-		// 		sq++;
-		// 	else if (*p == DOUBLE_QUOTE_CHAR)
-		// 		dq++;
-		// 	p++;
-		// }
-		// else if (*p == '\0' && (sq%2 == 1 || dq%2 == 1)) // TODO 欠陥あるので直す
-		// {
-		// 	printf("todo : Unclosed single quote\n");
-		// 	break;
-		// }
-		// else
-		// 	append_char(&new_word, *p++);
-
 		if (*p == SINGLE_QUOTE_CHAR)
 		{
 			// skip quote
@@ -60,33 +42,25 @@ void	quote_removal(t_token *tok)
 			while (*p != SINGLE_QUOTE_CHAR)
 			{
 				if (*p == '\0')
-				{
-					printf("todo : Unclosed single quote\n");
-					break;
-				}
+					assert_error("Unclosed single quote\n");
 				append_char(&new_word, *p++);
 			}
 			// skip quote
-			if (*p != '\0')
-				p++;
+			p++;
 		}
-		// else if (*p == DOUBLE_QUOTE_CHAR)
-		// {
-		// 	// skip quote
-		// 	p++;
-		// 	while (*p != DOUBLE_QUOTE_CHAR)
-		// 	{
-		// 		if (*p == '\0')
-		// 		{
-		// 			printf("todo : Unclosed double quote\n");
-		// 			break;
-		// 		}
-		// 		append_char(&new_word, *p++);
-		// 	}
-		// 	// skip quote
-		// 	if (*p != '\0')
-		// 		p++;
-		// }
+		else if (*p == DOUBLE_QUOTE_CHAR)
+		{
+			// skip quote
+			p++;
+			while (*p != DOUBLE_QUOTE_CHAR)
+			{
+				if (*p == '\0')
+					assert_error("Unclosed double quote\n");
+				append_char(&new_word, *p++);
+			}
+			// skip quote
+			p++;
+		}
 		else
 			append_char(&new_word, *p++);
 	}

@@ -6,17 +6,11 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 20:37:18 by imasayos          #+#    #+#             */
-/*   Updated: 2023/09/23 17:11:21 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/09/26 00:27:24 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	assert_error(const char *msg)
-{
-	dprintf(STDERR_FILENO, "assert Error: %s\n", msg);
-	exit(EXIT_FAILURE);
-}
 
 t_token	*new_token(char *word, t_token_kind kind)
 {
@@ -133,22 +127,34 @@ t_token	*word(char **rest, char *line)
 	start = line;
 	while (*line != '\0' && !is_metacharacter(*line))
 	{
-		line++;
-		// if (*line == SINGLE_QUOTE_CHAR)
-		// {
-		// 	// skip single quote
-		// 	line++;
-		// 	while (*line != SINGLE_QUOTE_CHAR)
-		// 	{
-		// 		if (*line != '\0')
-		// 			printf("TODO : Unclosed quote\n");
-		// 		line++;
-		// 	}
-		// 	// skip single quote
-		// 	line++;
-		// }
-		// else
-		// 	line++;
+		if (*line == SINGLE_QUOTE_CHAR)
+		{
+			// skip single quote
+			line++;
+			while (*line != SINGLE_QUOTE_CHAR)
+			{
+				if (*line == '\0')
+					todo("Unclosed single quote");
+				line++;
+			}
+			// skip single quote
+			line++;
+		}
+		else if (*line == DOUBLE_QUOTE_CHAR)
+		{
+			// skip double quote
+			line++;
+			while (*line != DOUBLE_QUOTE_CHAR)
+			{
+				if (*line == '\0')
+					todo("Unclosed double quote");
+				line++;
+			}
+			// skip double quote
+			line++;
+		}
+		else
+			line++;
 	}
 	word = strndup(start, line - start);
 	if (word == NULL)
