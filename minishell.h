@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/09/25 14:54:16 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/09/28 05:40:44 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,25 @@ typedef struct s_token
 	t_token				*next;
 }						t_token;
 
+enum e_node_kind {
+	ND_SIMPLE_CMD,
+};
+typedef enum e_node_kind	t_node_kind;
+
+typedef struct s_node	t_node;
+typedef struct s_node {
+	t_token		*args;
+	t_node_kind	kind;
+	t_node		*next;
+} t_node;
+
 # define PATH_MAX 1024
 
 t_token					*tokenize(char *line);
 
 // minishell.c
 void					fatal_error(const char *msg);
-void					expand(t_token *tok);
+void					expand(t_node *node);
 char					*search_path(const char *filename);
 
 // tokenizer.c
@@ -63,9 +75,11 @@ void todo(const char *msg) __attribute__((noreturn));;
 // void command_not_found_error(const char *cmd);
 void err_exit(const char *location, const char *msg, int status) __attribute__((noreturn));;
 
-
+// parse.c
+t_node *parse(t_token *tok);
 
 //destructor.c
+void free_node(t_node *node);
 void free_tok(t_token *tok);
 void free_argv(char **argv);
 

@@ -1,16 +1,6 @@
 #include "minishell.h"
 
-enum e_node_kind {
-	ND_SIMPLE_CMD,
-};
-typedef enum e_node_kind	t_node_kind;
 
-typedef struct s_node	t_node;
-struct s_node {
-	t_token		*args;
-	t_node_kind	kind;
-	t_node		*next;
-};
 
 bool	at_eof(t_token *tok)
 {
@@ -38,6 +28,9 @@ t_token	*tokdup(t_token *tok)
 	return (new_token(word, tok->kind));
 }
 
+/*
+	tokensの末尾にtokを追加する。
+*/
 void	append_tok(t_token **tokens, t_token *tok)
 {
 	if (*tokens == NULL)
@@ -58,8 +51,7 @@ t_node	*parse(t_token *tok)
 		if (tok->kind == TK_WORD)
 			append_tok(&node->args, tokdup(tok));
 		else
-			// todo("Implement parser");
-			printf("Implement parser\n");
+			todo("Implement parser");
 		tok = tok->next;
 	}
 	return (node);

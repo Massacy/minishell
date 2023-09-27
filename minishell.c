@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 06:01:01 by imasayos          #+#    #+#             */
-/*   Updated: 2023/09/25 14:55:59 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/09/28 05:49:09 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,8 @@ int	exec(char *argv[])
 void	interpret(char *line, int *stat_loc)
 {
 	t_token		*tok;
-	char **argv;	
+	char **argv;
+	t_node *node;
 	// char		*argv[] = {line, NULL}; // 今は一つの塊だけ対応。argvは可変長なのでmallocして、そこに引数を入れていく必要がある。
 	// pid_t		pid;
 	// int			wstatus;
@@ -185,34 +186,13 @@ void	interpret(char *line, int *stat_loc)
 		;
 	else
 	{
-		expand(tok);
-		argv = token_list_to_argv(tok);
+		node = parse(tok);
+		expand(node);
+		argv = token_list_to_argv(node->args);
 		*stat_loc = exec(argv);
 		free_argv(argv);
 	}
 	free_tok(tok);
-
-	// pid = fork();
-	// if (pid < 0)
-	// 	fatal_error("fork");
-	// else if (pid == 0)
-	// {
-	// 	// child process
-	// 	// execve(line, argv, environ);
-	// 	char *res;
-	// 	res = search_path(argv[0]);
-	// 	if (res)
-	// 		execve(res, argv, environ);
-	// 	else
-	// 		command_not_found_error(argv[0]);
-	// 	fatal_error("execve");
-	// }
-	// else
-	// {
-	// 	// parent process
-	// 	wait(&wstatus);
-	// 	return (WEXITSTATUS(wstatus));
-	// }
 }
 
 // 引数のコマンドが存在するか確かめる。存在して、実行可能ならそのパスを返す。else NULLを返す。

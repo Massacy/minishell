@@ -1,7 +1,7 @@
 #!/bin/bash
 assert() {
   # テストしようとしている内容をprint
-	printf '%-50s:' "\"$1\""
+	printf '%-50s:' "$1"
 
 	# bashの出力をcmpに保存
 	echo -n -e "$1" | bash >cmp 2>&-
@@ -46,11 +46,11 @@ assert 'echo -n hello'
 
 # assert 'echo "hello      world"'
 
-# assert 'echo "hello world"'
-# assert 'echo "'hello world'"' # これが正常動作しない $1を$*に変えると動く。
-# assert 'echo '"hello world"''
-# assert 'echo "'"hello world"'"'
-# assert 'echo '"'hello world'"''
+assert 'echo "hello world"'
+assert "echo \"'hello   world'\""
+assert "echo '\"hello   world\"'"
+assert "echo \"'\"hello  world\"'\""
+assert "echo '\"'hello  world'\"'"
 
 # assert 'echo "'hello'" "world"'
 
