@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 06:01:01 by imasayos          #+#    #+#             */
-/*   Updated: 2023/09/28 05:49:09 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/01 17:54:00 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,20 +177,30 @@ void	interpret(char *line, int *stat_loc)
 	t_token		*tok;
 	char **argv;
 	t_node *node;
+	bool syntax_error;
 	// char		*argv[] = {line, NULL}; // 今は一つの塊だけ対応。argvは可変長なのでmallocして、そこに引数を入れていく必要がある。
 	// pid_t		pid;
 	// int			wstatus;
+	syntax_error = false;
 
-	tok = tokenize(line);
+	tok = tokenize(line, &syntax_error);
 	if (tok->kind == TK_EOF)
 		;
+	else if(syntax_error)
+		*stat_loc = ERROR_TOKENIZE;
 	else
 	{
-		node = parse(tok);
-		expand(node);
-		argv = token_list_to_argv(node->args);
-		*stat_loc = exec(argv);
-		free_argv(argv);
+		node = parse(tok, &syntax_error);
+		if (syntax_error)
+			*stat_loc = ERROR_PARSE;
+		else
+		{
+			expand(node);
+			argv = token_list_to_argv(node->args);
+			*stat_loc = exec(argv);
+			free_argv(argv);
+		}
+		free_node(node);
 	}
 	free_tok(tok);
 }

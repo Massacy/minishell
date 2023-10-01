@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 20:37:18 by imasayos          #+#    #+#             */
-/*   Updated: 2023/09/26 00:27:24 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/01 17:28:52 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ t_token	*word(char **rest, char *line)
 	headはdummyで、head.nextが最初のtokenを指している。
 	operatorとwordをtokにつなげていく。
 */
-t_token	*tokenize(char *line)
+t_token	*tokenize(char *line, bool *syntax_error)
 {
 	t_token	head;
 	t_token	*tok;
@@ -184,7 +184,7 @@ t_token	*tokenize(char *line)
 		else if (is_word(line))
 			tok = tok->next = word(&line, line);
 		else
-			assert_error("Unexpected Token");
+			tokenize_error("Unexpected Token", &line, line, syntax_error);
 	}
 	tok->next = new_token(NULL, TK_EOF);
 	return (head.next);

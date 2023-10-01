@@ -41,7 +41,7 @@ void	append_tok(t_token **tokens, t_token *tok)
 	append_tok(&(*tokens)->next, tok);
 }
 
-t_node	*parse(t_token *tok)
+t_node	*parse(t_token *tok, bool *syntax_error)
 {
 	t_node	*node;
 
@@ -49,10 +49,12 @@ t_node	*parse(t_token *tok)
 	while (tok && !at_eof(tok))
 	{
 		if (tok->kind == TK_WORD)
+		{
 			append_tok(&node->args, tokdup(tok));
+			tok = tok->next;
+		}
 		else
-			todo("Implement parser");
-		tok = tok->next;
+			parse_error("Unexpected Token", &tok, tok, syntax_error);
 	}
 	return (node);
 }
