@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 20:37:18 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/01 17:28:52 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/02 05:04:33 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ bool	consume_blank(char **rest, char *line)
 	return (false);
 }
 
-
 /*
 	sの先頭からkeywordであるか比較して一致すればtrueを返す。
 */
@@ -61,7 +60,7 @@ bool	startswith(const char *s, const char *keyword)
 		A token that performs a control function.  It is one of the following symbols:
 		|| & && ; ;; ( ) | <newline>
 */
-bool	is_operator(const char *s)
+bool	is_control_operator(const char *s)
 {
 	size_t	i;
 
@@ -84,7 +83,9 @@ bool	is_operator(const char *s)
 */
 bool	is_metacharacter(char c)
 {
-	return (c && strchr("|&;()<> \t\n", c));
+	if (is_blank(c))
+		return (true);
+	return (c && strchr("|&;()<>\n", c));
 }
 
 /*
@@ -95,13 +96,30 @@ bool	is_word(const char *s)
 	return (*s && !is_metacharacter(*s));
 }
 
-t_token	*operator(char **rest, char *line) 
+bool	is_redirection_operator(const char *s)
+{
+	size_t	i;
+
+	static char *const operators[] = {">", "<", ">>", "<<"};
+	i = 0;
+	while (i < sizeof(operators) / sizeof(*operators))
+	{
+		if (startswith(s, operators[i]))
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
+t_token	*operator(char **rest, char *line)
 {
 	size_t	i;
 	char	*op;
 
-	static char *const operators[] = {"||", "&", "&&", ";", ";;", "(", ")", "|",
-		"\n"};
+	// static char *const operators[] = {"||", "&", "&&", ";", ";;", "(", ")",
+	//	"|", "\n"};
+	static char *const operators[] = {">>", "<<", "||", "&&", ";;", "<", ">",
+		"&", ";", "(", ")", "|", "\n"};
 	i = 0;
 	while (i < sizeof(operators) / sizeof(*operators))
 	{
@@ -163,7 +181,6 @@ t_token	*word(char **rest, char *line)
 	return (new_token(word, TK_WORD));
 }
 
-
 /*
 	headはdummyで、head.nextが最初のtokenを指している。
 	operatorとwordをtokにつなげていく。
@@ -179,7 +196,7 @@ t_token	*tokenize(char *line, bool *syntax_error)
 	{
 		if (consume_blank(&line, line))
 			continue ;
-		else if (is_operator(line))
+		else if (is_metacharacter(*line))
 			tok = tok->next = operator(&line, line);
 		else if (is_word(line))
 			tok = tok->next = word(&line, line);

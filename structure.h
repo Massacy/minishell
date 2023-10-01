@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/01 17:46:06 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/01 17:46:08 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/02 06:20:31 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,23 @@ typedef struct s_token
 enum						e_node_kind
 {
 	ND_SIMPLE_CMD,
+	ND_REDIR_OUT,
+	ND_REDIR_IN,
 };
 typedef enum e_node_kind	t_node_kind;
 
 typedef struct s_node		t_node;
 typedef struct s_node
 {
-	t_token					*args;
 	t_node_kind				kind;
 	t_node					*next;
+
+	// CMD
+	t_token		*args;
+	t_node		*redirects;
+	// REDIR
+	int			target_fd;
+	t_token		*filename;
+	int			file_fd;
+	int			target_fd_copy;
 }							t_node;

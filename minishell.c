@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 06:01:01 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/01 17:54:00 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/02 06:51:04 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,12 +144,14 @@ void	validate_access(const char *path, const char *filename)
 		err_exit(filename, "command not found", 127);
 }
 
-int	exec(char *argv[])
+int	exec_cmd(t_node *node)
 {
 	extern char	**environ;
-	const char	*path = argv[0];
+	const char	*path;
 	pid_t		pid;
 	int			wstatus;
+	char 		**argv;
+
 
 	pid = fork();
 	if (pid < 0)
@@ -157,6 +159,8 @@ int	exec(char *argv[])
 	else if (pid == 0)
 	{
 		// child process
+		argv = token_list_to_argv(node->args);
+		path = argv[0];
 		if (strchr(path, '/') == NULL)
 			path = search_path(path);
 		validate_access(path, argv[0]);
@@ -171,20 +175,30 @@ int	exec(char *argv[])
 	}
 }
 
+int	exec(t_node *node)
+{
+	int	status;
+
+	if (open_redirect_file(node->redirects) < 0)
+		return (ERROR_OPEN_REDIR);
+	do_redirect(node->redirects);
+	status = exec_cmd(node);
+	reset_redirect(node->redirects);
+	return (status);
+}
+
 // 子プロセスで*lineに入っているコマンドを実行する。
 void	interpret(char *line, int *stat_loc)
 {
 	t_token		*tok;
-	char **argv;
 	t_node *node;
 	bool syntax_error;
-	// char		*argv[] = {line, NULL}; // 今は一つの塊だけ対応。argvは可変長なのでmallocして、そこに引数を入れていく必要がある。
 	// pid_t		pid;
 	// int			wstatus;
 	syntax_error = false;
 
 	tok = tokenize(line, &syntax_error);
-	if (tok->kind == TK_EOF)
+	if (at_eof(tok))
 		;
 	else if(syntax_error)
 		*stat_loc = ERROR_TOKENIZE;
@@ -196,9 +210,8 @@ void	interpret(char *line, int *stat_loc)
 		else
 		{
 			expand(node);
-			argv = token_list_to_argv(node->args);
-			*stat_loc = exec(argv);
-			free_argv(argv);
+			// *stat_loc = exec(argv);
+			*stat_loc = exec(node);
 		}
 		free_node(node);
 	}
