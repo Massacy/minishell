@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/01 17:46:06 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/02 06:20:31 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/03 05:37:34 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ enum						e_node_kind
 	ND_SIMPLE_CMD,
 	ND_REDIR_OUT,
 	ND_REDIR_IN,
+	ND_REDIR_APPEND,
 };
 typedef enum e_node_kind	t_node_kind;
 

@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/01 19:48:04 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/02 06:37:35 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/03 05:37:36 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,12 @@ int	open_redirect_file(t_node *redir)
 		redir->file_fd = open(redir->filename->word, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	else if (redir->kind == ND_REDIR_IN)
 		redir->file_fd = open(redir->filename->word, O_RDONLY);
-	// else if (redir->kind == ND_REDIR_APPEND)
-	// 	redir->file_fd = open(redir->filename->word, O_CREAT | O_WRONLY | O_APPEND, 0644);
+	else if (redir->kind == ND_REDIR_APPEND)
+		redir->file_fd = open(redir->filename->word, O_CREAT | O_WRONLY | O_APPEND, 0644);
 	// else if (redir->kind == ND_REDIR_HEREDOC)
 	// 	redir->file_fd = open(redir->filename->word, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	// else
-	// 	fatal_error("open_redirect_file");
+	else
+		todo("open_redirect_file");
 	if (redir->file_fd < 0)
 	{
 		xperror(redir->filename->word);
@@ -58,7 +58,7 @@ void do_redirect(t_node *redir)
 {
 	if (redir == NULL)
 		return ;
-	if (redir->kind == ND_REDIR_OUT || redir->kind == ND_REDIR_IN)
+	if (redir->kind == ND_REDIR_OUT || redir->kind == ND_REDIR_IN || redir->kind == ND_REDIR_APPEND)
 	{
 		dup2(redir->file_fd, redir->target_fd);
  		close(redir->file_fd);
@@ -75,7 +75,7 @@ void reset_redirect(t_node *redir)
 		return ;
 		
 	reset_redirect(redir->next);
-	if (redir->kind == ND_REDIR_OUT || redir->kind == ND_REDIR_IN)
+	if (redir->kind == ND_REDIR_OUT || redir->kind == ND_REDIR_IN || redir->kind == ND_REDIR_APPEND)
 		dup2(redir->target_fd_copy, redir->target_fd);
 	else
 		todo("reset_redirect");

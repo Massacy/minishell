@@ -95,6 +95,17 @@ t_node	*redirect_in(t_token **rest, t_token *tok)
 	return (node);
 }
 
+t_node *redirect_append(t_token **rest, t_token *tok)
+{
+	t_node	*node;
+
+	node = new_node(ND_REDIR_APPEND);
+	node->filename = tokdup(tok->next);
+	node->target_fd = STDOUT_FILENO;
+	*rest = tok->next->next;
+	return (node);
+}
+
 void append_cmd_elem(t_node *cmd, t_token **rest, t_token *tok, bool *syntax_error)
 {
 
@@ -107,6 +118,8 @@ void append_cmd_elem(t_node *cmd, t_token **rest, t_token *tok, bool *syntax_err
 		append_node(&cmd->redirects, redirect_out(&tok, tok));
 	else if (equal_op(tok, "<") && is_word_tok(tok->next))
 		append_node(&cmd->redirects, redirect_in(&tok, tok));
+	else if (equal_op(tok, ">>") && is_word_tok(tok->next))
+		append_node(&cmd->redirects, redirect_append(&tok, tok));
 	else
 		todo("append_cmd_elem");
 		
