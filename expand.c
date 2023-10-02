@@ -23,7 +23,42 @@ void	append_char(char **s, char c)
 	*s = new;
 }
 
-void	quote_removal(t_token *tok)
+void remove_single_quote(char **dest, char **rest, char *p)
+{
+	if (*p != SINGLE_QUOTE_CHAR)
+		assert_error("Not single quote");
+	// skip quote
+	p++;
+	while (*p != SINGLE_QUOTE_CHAR)
+	{
+		if (*p == '\0')
+			assert_error("Unclosed single quote");
+		append_char(dest, *p++);
+	}
+	// skip quote
+	p++;
+	*rest = p;
+}
+
+void remove_double_quote(char **dest, char **rest, char *p)
+{
+	if (*p != DOUBLE_QUOTE_CHAR)
+		assert_error("Not double quote");
+	// skip quote
+	p++;
+	while (*p != DOUBLE_QUOTE_CHAR)
+	{
+		if (*p == '\0')
+			assert_error("Unclosed double quote");
+		append_char(dest, *p++);
+	}
+	// skip quote
+	p++;
+	*rest = p;
+}
+
+
+void	remove_quote(t_token *tok)
 {
 	char	*new_word;
 	char	*p;
@@ -32,70 +67,34 @@ void	quote_removal(t_token *tok)
 		return ;
 	p = tok->word;
 	new_word = NULL;
-	// int sq = 0;
-	// int dq = 0;
 
 	while (*p && !is_metacharacter(*p))
 	{
-		// if (*p == SINGLE_QUOTE_CHAR || *p == DOUBLE_QUOTE_CHAR)
-		// {
-		// 	if (*p == SINGLE_QUOTE_CHAR)
-		// 		sq++;
-		// 	else if (*p == DOUBLE_QUOTE_CHAR)
-		// 		dq++;
-		// 	p++;
-		// }
-		// else if (*p == '\0' && (sq%2 == 1 || dq%2 == 1)) // TODO 欠陥あるので直す
-		// {
-		// 	printf("todo : Unclosed single quote\n");
-		// 	break;
-		// }
-		// else
-		// 	append_char(&new_word, *p++);
-
 		if (*p == SINGLE_QUOTE_CHAR)
-		{
-			// skip quote
-			p++;
-			while (*p != SINGLE_QUOTE_CHAR)
-			{
-				if (*p == '\0')
-				{
-					printf("todo : Unclosed single quote\n");
-					break;
-				}
-				append_char(&new_word, *p++);
-			}
-			// skip quote
-			if (*p != '\0')
-				p++;
-		}
-		// else if (*p == DOUBLE_QUOTE_CHAR)
-		// {
-		// 	// skip quote
-		// 	p++;
-		// 	while (*p != DOUBLE_QUOTE_CHAR)
-		// 	{
-		// 		if (*p == '\0')
-		// 		{
-		// 			printf("todo : Unclosed double quote\n");
-		// 			break;
-		// 		}
-		// 		append_char(&new_word, *p++);
-		// 	}
-		// 	// skip quote
-		// 	if (*p != '\0')
-		// 		p++;
-		// }
+			remove_single_quote(&new_word, &p, p);
+		else if (*p == DOUBLE_QUOTE_CHAR)
+			remove_double_quote(&new_word, &p, p);
 		else
 			append_char(&new_word, *p++);
 	}
 	free(tok->word);
 	tok->word = new_word;
-	quote_removal(tok->next);
+	remove_quote(tok->next);
 }
 
-void	expand(t_token *tok)
+void expand_quote_removal(t_node *node)
 {
-	quote_removal(tok);
+	if (node == NULL)
+		return ;
+	remove_quote(node->args);
+	remove_quote(node->filename);
+	remove_quote(node->heredoc);
+	expand_quote_removal(node->redirects);
+	expand_quote_removal(node->command);
+	expand_quote_removal(node->next);
+}
+
+void	expand(t_node *node)
+{
+	expand_quote_removal(node);
 }
