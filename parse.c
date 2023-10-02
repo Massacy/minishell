@@ -63,13 +63,50 @@ void	append_node(t_node **node, t_node *elem)
 	append_node(&(*node)->next, elem);
 }
 
+
+t_node	*pipeline(t_token **rest, t_token *tok, bool *syntax_error)
+{
+	t_node	*node;
+
+	node = new_node(ND_PIPELINE);
+	node->inpipe[0] = STDIN_FILENO; // 左のin
+	node->inpipe[1] = -1;
+	node->outpipe[0] = -1;
+	node->outpipe[1] = STDOUT_FILENO; //左のout
+	node->command = simple_command(&tok, tok, syntax_error);
+	if (equal_op(tok, "|"))
+		node->next = pipeline(&tok, tok->next, syntax_error);
+	*rest = tok;
+	return (node);
+}
+
 t_node	*parse(t_token *tok, bool *syntax_error)
+{
+	return (pipeline(&tok, tok, syntax_error));
+}
+
+bool	is_control_operator(t_token *tok)
+{
+	static char	*const	operators[] = {"||", "&", "&&", ";", ";;", "(", ")", "|", "\n"};
+	size_t				i = 0;
+
+	while (i < sizeof(operators) / sizeof(*operators))
+	{
+		if (startswith(tok->word, operators[i]))
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
+t_node	*simple_command(t_token **rest, t_token *tok, bool *syntax_error)
 {
 	t_node	*node;
 
 	node = new_node(ND_SIMPLE_CMD);
-	while (tok && !at_eof(tok))
+	while (tok && !at_eof(tok) && !is_control_operator(tok))
 		append_cmd_elem(node, &tok, tok, syntax_error);
+	*rest = tok;
 	return (node);
 }
 
@@ -106,6 +143,17 @@ t_node *redirect_append(t_token **rest, t_token *tok)
 	return (node);
 }
 
+t_node	*redirect_heredoc(t_token **rest, t_token *tok)
+{
+	t_node	*node;
+
+	node = new_node(ND_REDIR_HEREDOC);
+	node->heredoc = tokdup(tok->next);
+	node->target_fd = STDIN_FILENO;
+	*rest = tok->next->next;
+	return (node);
+}
+
 void append_cmd_elem(t_node *cmd, t_token **rest, t_token *tok, bool *syntax_error)
 {
 
@@ -120,6 +168,8 @@ void append_cmd_elem(t_node *cmd, t_token **rest, t_token *tok, bool *syntax_err
 		append_node(&cmd->redirects, redirect_in(&tok, tok));
 	else if (equal_op(tok, ">>") && is_word_tok(tok->next))
 		append_node(&cmd->redirects, redirect_append(&tok, tok));
+	else if (equal_op(tok, "<<") && is_word_tok(tok->next))
+		append_node(&cmd->redirects, redirect_heredoc(&tok, tok));
 	else
 		todo("append_cmd_elem");
 		

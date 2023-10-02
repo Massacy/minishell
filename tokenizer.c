@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 20:37:18 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/02 05:04:33 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/03 08:35:36 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,26 +55,6 @@ bool	startswith(const char *s, const char *keyword)
 	return (memcmp(s, keyword, strlen(keyword)) == 0);
 }
 
-/*
-	control operator
-		A token that performs a control function.  It is one of the following symbols:
-		|| & && ; ;; ( ) | <newline>
-*/
-bool	is_control_operator(const char *s)
-{
-	size_t	i;
-
-	static char *const operators[] = {"||", "&", "&&", ";", ";;", "(", ")", "|",
-		"\n"};
-	i = 0;
-	while (i < sizeof(operators) / sizeof(*operators))
-	{
-		if (startswith(s, operators[i]))
-			return (true);
-		i++;
-	}
-	return (false);
-}
 
 /*
 	metacharacter
@@ -94,21 +74,6 @@ bool	is_metacharacter(char c)
 bool	is_word(const char *s)
 {
 	return (*s && !is_metacharacter(*s));
-}
-
-bool	is_redirection_operator(const char *s)
-{
-	size_t	i;
-
-	static char *const operators[] = {">", "<", ">>", "<<"};
-	i = 0;
-	while (i < sizeof(operators) / sizeof(*operators))
-	{
-		if (startswith(s, operators[i]))
-			return (true);
-		i++;
-	}
-	return (false);
 }
 
 t_token	*operator(char **rest, char *line)

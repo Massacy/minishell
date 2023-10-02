@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 06:01:01 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/02 06:51:04 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/03 08:14:24 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,14 +144,17 @@ void	validate_access(const char *path, const char *filename)
 		err_exit(filename, "command not found", 127);
 }
 
-int	exec_cmd(t_node *node)
+int	exec_pipeline(t_node *node)
 {
 	extern char	**environ;
 	const char	*path;
 	pid_t		pid;
-	int			wstatus;
+	// int			wstatus;
 	char 		**argv;
 
+	if (node == NULL)
+		return (-1);
+	prepare_pipe(node);
 
 	pid = fork();
 	if (pid < 0)
@@ -159,31 +162,63 @@ int	exec_cmd(t_node *node)
 	else if (pid == 0)
 	{
 		// child process
-		argv = token_list_to_argv(node->args);
+		prepare_pipe_child(node);
+		do_redirect(node->command->redirects);
+		argv = token_list_to_argv(node->command->args);
 		path = argv[0];
 		if (strchr(path, '/') == NULL)
 			path = search_path(path);
 		validate_access(path, argv[0]);
 		execve(path, argv, environ);
+		reset_redirect(node->command->redirects);
 		fatal_error("execve");
 	}
-	else
-	{
+	// else
+	// {
 		// parent process
-		wait(&wstatus);
-		return (WEXITSTATUS(wstatus));
-	}
+		// wait(&wstatus);
+		// return (WEXITSTATUS(wstatus));
+	// }
+	prepare_pipe_parent(node);
+	if (node->next)
+		return (exec_pipeline(node->next));
+	return (pid);
 }
+
+int wait_pipeline(pid_t last_pid)
+{
+	pid_t	wait_result;
+	int		status;
+	int wstatus;
+
+	while(1)
+	{
+		wait_result = wait(&wstatus);
+		if (wait_result == last_pid)
+			status = WEXITSTATUS(wstatus);
+		else if (wait_result < 0)
+		{
+			if (errno == ECHILD)
+				break ;
+		}
+	}
+	waitpid(last_pid, &wstatus, 0);
+	return (status);
+}
+
 
 int	exec(t_node *node)
 {
 	int	status;
+	pid_t last_pid;
 
-	if (open_redirect_file(node->redirects) < 0)
+	if (open_redirect_file(node) < 0)
 		return (ERROR_OPEN_REDIR);
-	do_redirect(node->redirects);
-	status = exec_cmd(node);
-	reset_redirect(node->redirects);
+	// do_redirect(node->redirects);
+	// status = exec_cmd(node);
+	// reset_redirect(node->redirects);
+	last_pid = exec_pipeline(node);
+	status  = wait_pipeline(last_pid);
 	return (status);
 }
 
@@ -193,8 +228,7 @@ void	interpret(char *line, int *stat_loc)
 	t_token		*tok;
 	t_node *node;
 	bool syntax_error;
-	// pid_t		pid;
-	// int			wstatus;
+
 	syntax_error = false;
 
 	tok = tokenize(line, &syntax_error);
@@ -210,7 +244,6 @@ void	interpret(char *line, int *stat_loc)
 		else
 		{
 			expand(node);
-			// *stat_loc = exec(argv);
 			*stat_loc = exec(node);
 		}
 		free_node(node);

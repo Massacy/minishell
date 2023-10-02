@@ -7,8 +7,10 @@ void free_node(t_node *node)
 
 	free_tok(node->args);
 	free_tok(node->filename);
+	free_tok(node->heredoc);
 	free_node(node->redirects);
 	free_node(node->next);
+	free_node(node->command);
 	free(node);
 }
 

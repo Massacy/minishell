@@ -6,7 +6,7 @@ CFLAGS := -Wall -Wextra -Werror
 # CFLAGS := -Wall -Wextra -Werror -fsanitize=address -g
 # INCLUDES := -I/usr/local/include
 INCLUDES := -lreadline
-SRCS := minishell.c tokenizer.c expand.c parse.c error.c destructor.c redirection.c
+SRCS := minishell.c tokenizer.c expand.c parse.c error.c destructor.c redirection.c pipe.c
 OBJS := $(patsubst %.c, %.o, $(SRCS))
 
 all: $(NAME)
