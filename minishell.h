@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/03 08:25:03 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/04 06:35:27 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define MINISHELL_H
 
 # include "libft/libft.h"
+# include "ft_dprintf/ft_dprintf.h"
 # include "structure.h"
 # include <readline/history.h>
 # include <readline/readline.h>
