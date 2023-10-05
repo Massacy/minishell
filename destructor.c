@@ -1,10 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   destructor.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/06 05:00:24 by imasayos          #+#    #+#             */
+/*   Updated: 2023/10/06 05:00:29 by imasayos         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void free_node(t_node *node)
+void	free_node(t_node *node)
 {
 	if (node == NULL)
 		return ;
-
 	free_tok(node->args);
 	free_tok(node->filename);
 	free_tok(node->heredoc);

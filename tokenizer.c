@@ -6,28 +6,11 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 20:37:18 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/03 08:35:36 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/06 06:41:28 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-t_token	*new_token(char *word, t_token_kind kind)
-{
-	t_token	*tok;
-
-	tok = calloc(1, sizeof(*tok));
-	if (tok == NULL)
-		fatal_error("calloc");
-	tok->word = word;
-	tok->kind = kind;
-	return (tok);
-}
-
-bool	is_blank(char c)
-{
-	return (c == ' ' || c == '\t' || c == '\n');
-}
 
 /*
 	・ひとつでもblankを進めたらがあればtrueを返して、そうでなければfalseを返す。
@@ -47,59 +30,31 @@ bool	consume_blank(char **rest, char *line)
 	return (false);
 }
 
-/*
-	sの先頭からkeywordであるか比較して一致すればtrueを返す。
-*/
-bool	startswith(const char *s, const char *keyword)
-{
-	return (memcmp(s, keyword, strlen(keyword)) == 0);
-}
-
-
-/*
-	metacharacter
-		A character that, when unquoted, separates words.  One of the following:
-		|  & ; ( ) < > space tab
-*/
-bool	is_metacharacter(char c)
-{
-	if (is_blank(c))
-		return (true);
-	return (c && strchr("|&;()<>\n", c));
-}
-
-/*
-	metacharacterでない文字をwordとして扱う。
-*/
-bool	is_word(const char *s)
-{
-	return (*s && !is_metacharacter(*s));
-}
-
+// static char *const operators[] = {"||", "&", "&&", ";", ";;", "(", ")",
+//	"|", "\n"};
+// unreachable
 t_token	*operator(char **rest, char *line)
 {
-	size_t	i;
-	char	*op;
-
-	// static char *const operators[] = {"||", "&", "&&", ";", ";;", "(", ")",
-	//	"|", "\n"};
-	static char *const operators[] = {">>", "<<", "||", "&&", ";;", "<", ">",
+	size_t				i;
+	char				*op;
+	static char *const	operators[] = {">>", "<<", "||", "&&", ";;", "<", ">",
 		"&", ";", "(", ")", "|", "\n"};
+
 	i = 0;
 	while (i < sizeof(operators) / sizeof(*operators))
 	{
 		if (startswith(line, operators[i]))
 		{
-			op = strdup(operators[i]);
+			op = ft_strdup(operators[i]);
 			if (op == NULL)
 				fatal_error("strdup");
-			*rest = line + strlen(op);
+			*rest = line + ft_strlen(op);
 			return (new_token(op, TK_OP));
 		}
 		i++;
 	}
 	assert_error("Unexpected operator");
-	return (NULL); // unreachable
+	return (NULL);
 }
 
 t_token	*word(char **rest, char *line)
@@ -139,7 +94,7 @@ t_token	*word(char **rest, char *line)
 		else
 			line++;
 	}
-	word = strndup(start, line - start);
+	word = ft_strndup(start, line - start);
 	if (word == NULL)
 		fatal_error("strndup");
 	*rest = line;
@@ -162,11 +117,12 @@ t_token	*tokenize(char *line, bool *syntax_error)
 		if (consume_blank(&line, line))
 			continue ;
 		else if (is_metacharacter(*line))
-			tok = tok->next = operator(&line, line);
+			tok->next = operator(&line, line);
 		else if (is_word(line))
-			tok = tok->next = word(&line, line);
+			tok->next = word(&line, line);
 		else
 			tokenize_error("Unexpected Token", &line, line, syntax_error);
+		tok = tok->next;
 	}
 	tok->next = new_token(NULL, TK_EOF);
 	return (head.next);
