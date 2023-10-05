@@ -1,27 +1,15 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/09/23 19:20:18 by imasayos         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
 # include "libft/libft.h"
-# include <readline/history.h>
-# include <readline/readline.h>
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 # include <sys/types.h>
 # include <unistd.h>
+# include <signal.h>
+# include <fcntl.h>
 
 # define SINGLE_QUOTE_CHAR '\''
 # define DOUBLE_QUOTE_CHAR '\"'
@@ -55,5 +43,18 @@ char					*search_path(const char *filename);
 // tokenizer.c
 bool					is_metacharacter(char c);
 t_token *new_token(char *word, t_token_kind kind);
+
+// signal.c
+void	set_signal();
+void	signal_handler(int sig);
+
+// builtin.c
+void	minishell_exit(int exit_status);
+void	minishell_cd(char *dir);
+void	minishell_export(char **argv);
+void	minishell_unset(char **argv);
+
+// environment.c
+void	env_translate(char **argv);
 
 #endif

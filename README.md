@@ -1,0 +1,36 @@
+# minishell なしすもも
+
+### チェックリスト
+- [ ] Step1. Readline Loop
+- [ ] Step2. Build and Test
+- [ ] Step3. Exec Path
+- [ ] Step4. Exec Filename
+- [ ] Step5. Tokenizer
+  - [ ] Step5-1. Unquoted
+  - [ ] Step5-2. Single Quote（前編）
+  - [ ] Step5-2. Single Quote（後編）Expand (Quote Removal)
+  - [ ] Step5-3. Double Quote
+- [ ] Step6. Tokenize Error
+- [ ] Step7. Parser (Simple Command)
+- [ ] Step8. Parse Error
+- [ ] Step9. Redirection
+  - [ ] Step9-1. Redirect Output
+  - [ ] Step9-2. Redirect Input
+  - [ ] Step9-3. Appending Redirected output
+  - [ ] Step9-4. Here Document
+- [ ] Step10. Pipe
+- [ ] Step11. Expand
+  - [ ] Step11-1. Variable
+  - [ ] Step11-2. Special Parameter
+  - [ ] Step11-3. Parameters in Here Document
+  - [ ] Step11-4. Word Splitting
+- [x] Step12. Signal
+- [ ] Step13. Environ/Hashmap
+- [ ] Step14. Builtin
+  - [ ] exit
+  - [ ] export
+  - [ ] unset
+  - [ ] env
+  - [ ] cd
+  - [ ] echo
+  - [ ] pwd

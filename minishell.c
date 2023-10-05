@@ -1,17 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/28 06:01:01 by imasayos          #+#    #+#             */
-/*   Updated: 2023/09/25 00:36:05 by imasayos         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
-
+#include <readline/history.h>
+#include <readline/readline.h>
 
 int free_split(char **split)
 {
@@ -142,27 +131,40 @@ int	interpret(t_token *tok)
 	int			wstatus;
 
 	argv = token_list_to_argv(tok);
-	pid = fork();
-	if (pid < 0)
-		fatal_error("fork");
-	else if (pid == 0)
-	{
-		// child process
-		// execve(line, argv, environ);
-		char *res;
-		res = search_path(argv[0]);
-		if (res)
-			execve(res, argv, environ);
-		else
-			command_not_found_error(argv[0]);
-		fatal_error("execve");
-	}
+	if (!strncmp(argv[0], "exit", 5))
+		minishell_exit(0);
+	else if (!strncmp(argv[0], "cd", 3))
+		minishell_cd(argv[1]);
+	else if (!strncmp(argv[0], "export", 7))
+		minishell_export(argv);
+	else if (!strncmp(argv[0], "unset", 6))
+		minishell_unset(argv);
 	else
 	{
-		// parent process
-		wait(&wstatus);
-		return (WEXITSTATUS(wstatus));
+		env_translate(argv);
+		pid = fork();
+		if (pid < 0)
+			fatal_error("fork");
+		else if (pid == 0)
+		{
+			// child process
+			// execve(line, argv, environ);
+			char *res;
+			res = search_path(argv[0]);
+			if (res)
+				execve(res, argv, environ);
+			else
+				command_not_found_error(argv[0]);
+			fatal_error("execve");
+		}
+		else
+		{
+			// parent process
+			wait(&wstatus);
+			return (WEXITSTATUS(wstatus));
+		}
 	}
+	return (0);
 }
 
 // 引数のコマンドが存在するか確かめる。存在して、実行可能ならそのパスを返す。else NULLを返す。
@@ -186,7 +188,6 @@ char	*search_path(const char *filename)
 		if (access(path, X_OK) == 0)
 		{
 			char	*dup;
-
 			dup = strdup(path);
 			if (dup == NULL)
 				fatal_error("strdup");
@@ -216,6 +217,7 @@ int main(int argc, char const *argv[])
 	(void)argv;
 	prompt = NULL;
 	exit_status = 0;
+	set_signal();
 	while (1)
 	{
 		prompt = readline("$> ");
@@ -257,7 +259,5 @@ int main(int argc, char const *argv[])
 		free(prompt);
 		// free_split(split);
 	}
-	// printf("bye~!\n");
-	// return 0;
-	exit(exit_status);
+	minishell_exit(exit_status);
 }
