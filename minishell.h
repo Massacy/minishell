@@ -50,10 +50,12 @@ void	set_signal();
 void	signal_handler(int sig);
 
 // builtin.c
-void	minishell_exit(int exit_status);
 void	minishell_cd(char *dir);
+// void	minishell_pwd();
 void	minishell_export(char **argv);
 void	minishell_unset(char **argv);
+// void	minishell_env(char **argv);
+void	minishell_exit(int exit_status);
 
 // environment.c
 void	env_init(char **envp);

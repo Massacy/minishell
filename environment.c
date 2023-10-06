@@ -3,12 +3,16 @@
 static char	*ft_getenv(char *name)
 {
 	int		fd;
+	char	*rc_path;
 	char	*line;
 	char	*value;
 
-	fd = open(".minishell_rc", O_RDONLY);
+	rc_path = (ft_strjoin(getenv("HOME"), "/.minishell_rc"));
+	fd = open(rc_path, O_RDWR);
+	if (fd < 0)
+		exit(1);
 	value = NULL;
-	while (!value)
+	while (1)
 	{
 		line = get_next_line(fd);
 		if (!line)
@@ -26,9 +30,13 @@ static char	*ft_getenv(char *name)
 
 void	env_init(char **envp)
 {
-	int	fd;
+	int		fd;
+	char	*rc_path;
 
-	fd = open(".minishell_rc", O_RDWR);
+	rc_path = (ft_strjoin(getenv("HOME"), "/.minishell_rc"));
+	fd = open(rc_path, O_RDWR);
+	if (fd < 0)
+		exit(1);
 	while (*envp)
 	{
 		if (!ft_strncmp(*envp, "SHLVL=", 6))

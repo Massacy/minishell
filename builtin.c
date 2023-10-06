@@ -9,18 +9,24 @@ void	minishell_exit(int exit_status)
 void	minishell_cd(char *dir)
 {
 	if (!dir)
+	{
 		chdir("/");
+	}
 	else
+	{
 		chdir(dir);
+	}
 }
 
 void	minishell_export(char **argv)
 {
 	int		fd;
+	char	*rc_path;
 	char	*name;
 	char	*value;
 
-	fd = open(".minishell_rc", O_RDWR);
+	rc_path = (ft_strjoin(getenv("HOME"), "/.minishell_rc"));
+	fd = open(rc_path, O_RDWR);
 	if (fd < 0)
 		exit(1);
 	argv ++;
@@ -36,10 +42,12 @@ void	minishell_export(char **argv)
 void	minishell_unset(char **argv)
 {
 	int		fd;
+	char	*rc_path;
 	char	*name;
 	char	*value;
 
-	fd = open(".minishell_rc", O_RDWR);
+	rc_path = (ft_strjoin(getenv("HOME"), "/.minishell_rc"));
+	fd = open(rc_path, O_RDWR);
 	if (fd < 0)
 		exit(1);
 	argv ++;
