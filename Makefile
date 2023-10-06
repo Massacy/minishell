@@ -1,5 +1,6 @@
 NAME		= minishell
 NAME_LIBFT	= libft/libft.a
+NAME_GNL	= gnl/get_next_line
 CC			= cc
 # CFLAGS := -Wall -Wextra -Werror -fsanitize=thread -g
 # CFLAGS := -Wall -Wextra -Werror -fsanitize=address -g
@@ -18,20 +19,24 @@ all: $(NAME)
 $(NAME_LIBFT):
 	make -C libft
 
-$(NAME) : $(OBJS) $(NAME_LIBFT)
-	$(CC) $(CFLAGS) $(LIBS) $(OBJS) $(NAME_LIBFT) -o $(NAME)
+$(NAME_GNL):
+	make -C gnl
+
+$(NAME) : $(OBJS) $(NAME_LIBFT) $(NAME_GNL)
+	$(CC) $(CFLAGS) $(LIBS) $(OBJS) $(NAME_LIBFT) $(NAME_GNL) -o $(NAME)
 
 # %.o: %.c
 # 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean :
-	rm -f $(OBJS) ~/.inputrc
+	rm -f $(OBJS) ~/.inputrc .minishell_rc
 	make -C libft clean
-	@rm .minishell_rc
+	make -C gnl clean
 
 fclean : clean
 	rm -f $(NAME)
 	make -C libft fclean
+	make -C gnl clean
 
 re : fclean all
 

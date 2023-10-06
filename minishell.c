@@ -131,13 +131,13 @@ int	interpret(t_token *tok)
 	int			wstatus;
 
 	argv = token_list_to_argv(tok);
-	if (!strncmp(argv[0], "exit", 5))
+	if (!ft_strncmp(argv[0], "exit", 5))
 		minishell_exit(0);
-	else if (!strncmp(argv[0], "cd", 3))
+	else if (!ft_strncmp(argv[0], "cd", 3))
 		minishell_cd(argv[1]);
-	else if (!strncmp(argv[0], "export", 7))
+	else if (!ft_strncmp(argv[0], "export", 7))
 		minishell_export(argv);
-	else if (!strncmp(argv[0], "unset", 6))
+	else if (!ft_strncmp(argv[0], "unset", 6))
 		minishell_unset(argv);
 	else
 	{
@@ -206,7 +206,7 @@ char	*search_path(const char *filename)
 //     system("leaks -q minishell");
 // }
 
-int main(int argc, char const *argv[])
+int main(int argc, char **argv, char **envp)
 {
 	char *prompt;
 	// char **split;
@@ -218,6 +218,7 @@ int main(int argc, char const *argv[])
 	prompt = NULL;
 	exit_status = 0;
 	set_signal();
+	env_init(envp);
 	while (1)
 	{
 		prompt = readline("$> ");

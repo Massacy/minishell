@@ -2,6 +2,7 @@
 # define MINISHELL_H
 
 # include "libft/libft.h"
+# include "gnl/get_next_line.h"
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -55,6 +56,7 @@ void	minishell_export(char **argv);
 void	minishell_unset(char **argv);
 
 // environment.c
+void	env_init(char **envp);
 void	env_translate(char **argv);
 
 #endif
