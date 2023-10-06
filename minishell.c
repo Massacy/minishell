@@ -125,20 +125,22 @@ int	interpret(t_token *tok)
 {
 	extern char	**environ;
 	// t_token		*tok;
-	char **argv;	
+	char **argv;
 	// char		*argv[] = {line, NULL}; // 今は一つの塊だけ対応。argvは可変長なのでmallocして、そこに引数を入れていく必要がある。
 	pid_t		pid;
 	int			wstatus;
 
 	argv = token_list_to_argv(tok);
-	if (!ft_strncmp(argv[0], "exit", 5))
-		minishell_exit(0);
-	else if (!ft_strncmp(argv[0], "cd", 3))
+	if (!ft_strncmp(argv[0], "cd", 3))
 		minishell_cd(argv[1]);
 	else if (!ft_strncmp(argv[0], "export", 7))
 		minishell_export(argv);
 	else if (!ft_strncmp(argv[0], "unset", 6))
 		minishell_unset(argv);
+	else if (!ft_strncmp(argv[0], "env", 4))
+		minishell_env(argv);
+	else if (!ft_strncmp(argv[0], "exit", 5))
+		minishell_exit(0);
 	else
 	{
 		env_translate(argv);

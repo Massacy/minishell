@@ -9,7 +9,7 @@ RLDIR		= $(shell brew --prefix readline)
 INCLUDES	= -I include -I$(RLDIR)/include
 CFLAGS		= -Wall -Wextra -Werror $(INCLUDES)
 LIBS		= -lreadline -L$(RLDIR)/lib
-SRCS		= minishell.c tokenizer.c expand.c parse.c signal.c builtin.c environment.c
+SRCS		= minishell.c tokenizer.c expand.c parse.c signal.c environment.c builtin.c
 OBJS		= $(SRCS:%.c=%.o)
 
 all: $(NAME)
