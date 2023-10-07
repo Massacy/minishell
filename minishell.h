@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/08 04:31:42 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/08 05:03:48 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ t_token	*tokenize(char *line, bool *syntax_error);
 
 // minishell.c
 void	fatal_error(const char *msg);
-void	expand(t_node *node);
+void	expand(t_node *node, int *last_status);
 char	*search_path(const char *filename);
 void	validate_access(const char *path, const char *filename);
 
@@ -111,13 +111,14 @@ void	expand_quote_removal(t_node *node);
 void	append_char(char **s, char c);
 
 // expand_variable.c
-void	expand_variable(t_node *node);
+void	expand_variable(t_node *node, int *last_status);
 
 // expand_variable_sub.c
 bool	is_alpha_under(char c);
 bool	is_alpha_num_under(char c);
 bool	is_variable(char *s);
-
+bool	is_special_parameter(char *s);
+void	expand_special_parameter_str(char **dst, char **rest, char *p, int *last_status);
 
 // ft_strndup.c
 char	*ft_strndup(const char *s1, size_t n);

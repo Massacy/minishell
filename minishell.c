@@ -6,27 +6,11 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 06:01:01 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/06 06:29:41 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/08 05:22:55 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	free_split(char **split)
-{
-	int	i;
-
-	i = 0;
-	while (split[i] != NULL)
-	{
-		free(split[i]);
-		i++;
-	}
-	free(split);
-	return (0);
-}
-
-// void	fatal_error(const char *msg) __attribute__((noreturn));
 
 /*
 	t_tokenの線形リストをchar**に変換する。
@@ -236,7 +220,7 @@ void	interpret(char *line, int *stat_loc)
 			*stat_loc = ERROR_PARSE;
 		else
 		{
-			expand(node);
+			expand(node, stat_loc);
 			*stat_loc = exec(node);
 		}
 		free_node(node);
