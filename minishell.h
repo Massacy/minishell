@@ -14,6 +14,8 @@
 
 # define SINGLE_QUOTE_CHAR '\''
 # define DOUBLE_QUOTE_CHAR '\"'
+# define RC_PATH "/.minishell_rc"
+# define TRC_PATH "/.minishell_trc"
 
 typedef enum e_token_kind
 {
@@ -59,6 +61,7 @@ void	minishell_exit(int exit_status);
 // environment.c
 void	env_init(char **envp);
 void	env_translate(char **argv);
-void	env_loop(char **argv, void f(char **, char *));
+void	env_loop(char *rc_file, char **argv, void f(char **, char *));
+int		invalid_identifier(char *s);
 
 #endif

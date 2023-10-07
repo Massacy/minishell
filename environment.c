@@ -8,7 +8,7 @@ static char	*ft_getenv(char *name)
 	char	*line;
 	char	*value;
 
-	rc_path = (ft_strjoin(getenv("HOME"), "/.minishell_rc"));
+	rc_path = (ft_strjoin(getenv("HOME"), RC_PATH));
 	fd = open(rc_path, O_RDWR);
 	if (fd < 0)
 		exit(1);
@@ -32,13 +32,29 @@ static char	*ft_getenv(char *name)
 	return value;
 }
 
+int	invalid_identifier(char *s)
+{
+	if (!*s)
+		return (1);
+	if (!ft_isalpha(*s) && *s != '_')
+		return (0);
+	s ++;
+	while (*s && *s != '=')
+	{
+		if (!ft_isalnum(*s) && *s != '_')
+			return (0);
+		s ++;
+	}
+	return (1);
+}
+
 void	env_init(char **envp)
 {
 	int		fd;
 	char	*rc_path;
 
-	rc_path = (ft_strjoin(getenv("HOME"), "/.minishell_rc"));
-	fd = open(rc_path, O_RDWR);
+	rc_path = (ft_strjoin(getenv("HOME"), RC_PATH));
+	fd = open(rc_path, (O_RDWR | O_TRUNC | O_CREAT), 0666);
 	if (fd < 0)
 		exit(1);
 	while (*envp)
@@ -99,13 +115,13 @@ void	env_translate(char **argv)
 	}
 }
 
-void	env_loop(char **argv, void f(char **, char *))
+void	env_loop(char *rc_file, char **argv, void f(char **, char *))
 {
 	int		fd;
 	char	*line;
 	char	*rc_path;
 
-	rc_path = ft_strjoin(getenv("HOME"), "/.minishell_rc");
+	rc_path = ft_strjoin(getenv("HOME"), rc_file);
 	fd = open(rc_path, O_RDWR);
 	if (fd < 0)
 		exit(1);

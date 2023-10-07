@@ -15,7 +15,6 @@ OBJS		= $(SRCS:%.c=%.o)
 
 all: $(NAME)
 	@echo 'set echo-control-characters off' > ~/.inputrc
-	@rm -f ~/.minishell_rc
 	@touch ~/.minishell_rc
 	@chmod 666 ~/.minishell_rc
 
@@ -32,7 +31,7 @@ $(NAME) : $(OBJS) $(NAME_LIBFT) $(NAME_GNL)
 # 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean :
-	rm -f $(OBJS) ~/.inputrc ~/.minishell_rc
+	rm -f $(OBJS) ~/.inputrc ~/.minishell_rc ~/.minishell_trc
 	make -C libft clean
 	make -C gnl clean
 

@@ -10,5 +10,5 @@ static void	f(char **argv, char *line)
 
 void	minishell_env(char **argv)
 {
-	env_loop(argv, f);
+	env_loop(RC_PATH, argv, f);
 }
