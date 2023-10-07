@@ -59,5 +59,6 @@ void	minishell_exit(int exit_status);
 // environment.c
 void	env_init(char **envp);
 void	env_translate(char **argv);
+void	env_loop(char **argv, void f(char **, char *));
 
 #endif

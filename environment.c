@@ -2,6 +2,7 @@
 
 static char	*ft_getenv(char *name)
 {
+	int		i;
 	int		fd;
 	char	*rc_path;
 	char	*line;
@@ -11,15 +12,18 @@ static char	*ft_getenv(char *name)
 	fd = open(rc_path, O_RDWR);
 	if (fd < 0)
 		exit(1);
+	i = 0;
+	while (ft_isalnum(name[i]) || name[i] == '_')
+		i ++;
 	value = NULL;
 	while (1)
 	{
 		line = get_next_line(fd);
 		if (!line)
 			break ;
-		if (!ft_strncmp(line, name, ft_strlen(name)) && line[ft_strlen(name)] == '=')
+		if (!ft_strncmp(line, name, i) && line[i] == '=')
 		{
-			value = ft_strdup(&(line[ft_strlen(name) + 1]));
+			value = ft_strdup(&(line[i + 1]));
 			value[ft_strlen(value) - 1] = '\0';
 		}
 		free(line);
@@ -56,21 +60,63 @@ void	env_init(char **envp)
 
 void	env_translate(char **argv)
 {
+	int		i;
+	int		s_i;
+	char	*tmp1;
+	char	*tmp2;
 	char	*var;
 
 	while (*argv)
 	{
-		if ((*argv)[0] == '$')
+		s_i = 0;
+		while ((*argv)[s_i])
 		{
-			var = ft_getenv(&((*argv)[1]));
-			if (!var)
-				(*argv)[0] = '\0';
-			else
+			if ((*argv)[s_i] == '$'
+				&& (ft_isalpha((*argv)[s_i + 1]) || (*argv)[s_i + 1] == '_'))
 			{
-				free(*argv);
-				*argv = var;
+				i = 1;
+				while (ft_isalnum((*argv)[s_i + i])
+					|| (*argv)[s_i + i] == '_')
+					i ++;
+				(*argv)[s_i] = '\0';
+				tmp1 = *argv;
+				var = ft_getenv(&((*argv)[s_i + 1]));
+				if (!var)
+					*argv = ft_strjoin(*argv, &((*argv)[s_i + i]));
+				else
+				{
+					tmp2 = ft_strjoin(*argv, var);
+					free(var);
+					*argv = ft_strjoin(tmp2, &((*argv)[s_i + i]));
+					free(tmp2);
+				}
+				free(tmp1);
 			}
+			else
+				s_i ++;
 		}
 		argv ++;
 	}
+}
+
+void	env_loop(char **argv, void f(char **, char *))
+{
+	int		fd;
+	char	*line;
+	char	*rc_path;
+
+	rc_path = ft_strjoin(getenv("HOME"), "/.minishell_rc");
+	fd = open(rc_path, O_RDWR);
+	if (fd < 0)
+		exit(1);
+	free(rc_path);
+	while (1)
+	{
+		line = get_next_line(fd);
+		f(argv, line);
+		if (!line)
+			break ;
+		free(line);
+	}
+	close (fd);
 }

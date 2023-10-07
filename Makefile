@@ -9,11 +9,13 @@ RLDIR		= $(shell brew --prefix readline)
 INCLUDES	= -I include -I$(RLDIR)/include
 CFLAGS		= -Wall -Wextra -Werror $(INCLUDES)
 LIBS		= -lreadline -L$(RLDIR)/lib
-SRCS		= minishell.c tokenizer.c expand.c parse.c signal.c environment.c builtin.c
+SRCS		= minishell.c tokenizer.c expand.c parse.c signal.c environment.c\
+			  bltin_cd.c bltin_export.c bltin_unset.c bltin_env.c bltin_exit.c
 OBJS		= $(SRCS:%.c=%.o)
 
 all: $(NAME)
 	@echo 'set echo-control-characters off' > ~/.inputrc
+	@rm -f ~/.minishell_rc
 	@touch ~/.minishell_rc
 	@chmod 666 ~/.minishell_rc
 

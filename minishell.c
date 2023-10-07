@@ -131,6 +131,7 @@ int	interpret(t_token *tok)
 	int			wstatus;
 
 	argv = token_list_to_argv(tok);
+	env_translate(argv);
 	if (!ft_strncmp(argv[0], "cd", 3))
 		minishell_cd(argv[1]);
 	else if (!ft_strncmp(argv[0], "export", 7))
@@ -143,7 +144,6 @@ int	interpret(t_token *tok)
 		minishell_exit(0);
 	else
 	{
-		env_translate(argv);
 		pid = fork();
 		if (pid < 0)
 			fatal_error("fork");
