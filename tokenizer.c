@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 20:37:18 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/06 06:41:28 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/08 06:26:48 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@ bool	consume_blank(char **rest, char *line)
 // unreachable
 t_token	*operator(char **rest, char *line)
 {
-	size_t				i;
-	char				*op;
-	static char *const	operators[] = {">>", "<<", "||", "&&", ";;", "<", ">",
-		"&", ";", "(", ")", "|", "\n"};
+	size_t	i;
+	char	*op;
+	char	*operators[] = { ">>", "<<", "||", "&&", ";;", "<", ">", \
+		"&", ";", "(", ")", "|", "\n"}; // TODO : ここnormどうしよう
 
 	i = 0;
 	while (i < sizeof(operators) / sizeof(*operators))
@@ -57,6 +57,19 @@ t_token	*operator(char **rest, char *line)
 	return (NULL);
 }
 
+static char	*quote_check(char *line, const char c, char *msg)
+{
+	line++;
+	while (*line != c)
+	{
+		if (*line == '\0')
+			todo(msg);
+		line++;
+	}
+	line++;
+	return (line);
+}
+
 t_token	*word(char **rest, char *line)
 {
 	const char	*start;
@@ -66,31 +79,11 @@ t_token	*word(char **rest, char *line)
 	while (*line != '\0' && !is_metacharacter(*line))
 	{
 		if (*line == SINGLE_QUOTE_CHAR)
-		{
-			// skip single quote
-			line++;
-			while (*line != SINGLE_QUOTE_CHAR)
-			{
-				if (*line == '\0')
-					todo("Unclosed single quote");
-				line++;
-			}
-			// skip single quote
-			line++;
-		}
+			line = quote_check(line, SINGLE_QUOTE_CHAR,
+					"Unclosed single quote");
 		else if (*line == DOUBLE_QUOTE_CHAR)
-		{
-			// skip double quote
-			line++;
-			while (*line != DOUBLE_QUOTE_CHAR)
-			{
-				if (*line == '\0')
-					todo("Unclosed double quote");
-				line++;
-			}
-			// skip double quote
-			line++;
-		}
+			line = quote_check(line, DOUBLE_QUOTE_CHAR,
+					"Unclosed double quote");
 		else
 			line++;
 	}

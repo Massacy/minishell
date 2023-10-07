@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/08 05:03:48 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/08 06:57:51 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,26 @@
 t_token	*tokenize(char *line, bool *syntax_error);
 
 // minishell.c
-void	fatal_error(const char *msg);
-void	expand(t_node *node, int *last_status);
+
+// exec.c
+int		exec(t_node *node);
 char	*search_path(const char *filename);
+
+// exec_sub.c
 void	validate_access(const char *path, const char *filename);
+char	*accessible_path(char *path);
+char	**token_list_to_argv(t_token *tok);
+
+// expand.c
+void	expand(t_node *node, int *last_status);
+
+// expand_variable_sub.c
+void	append_num(char **dst, unsigned int num);
+
+// expand_variable_param.c
+void	expand_special_parameter_str(char **dst, char **rest, char *p,
+			int *last_status);
+bool	is_special_parameter(char *s);
 
 // tokenizer.c
 bool	is_metacharacter(char c);
@@ -118,9 +134,15 @@ bool	is_alpha_under(char c);
 bool	is_alpha_num_under(char c);
 bool	is_variable(char *s);
 bool	is_special_parameter(char *s);
-void	expand_special_parameter_str(char **dst, char **rest, char *p, int *last_status);
+void	expand_special_parameter_str(char **dst, char **rest, \
+			char *p, int *last_status);
 
 // ft_strndup.c
 char	*ft_strndup(const char *s1, size_t n);
+
+// exec_sub.c
+char	*accessible_path(char *path);
+void	validate_access(const char *path, const char *filename);
+char	**token_list_to_argv(t_token *tok);
 
 #endif
