@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 05:00:58 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/06 05:35:34 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/08 04:20:14 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,9 @@ void	remove_quote(t_token *tok)
 	if (tok == NULL || tok->kind != TK_WORD || tok->word == NULL)
 		return ;
 	p = tok->word;
-	new_word = NULL;
+	new_word = calloc(1, sizeof(char));
+	if (new_word == NULL)
+		fatal_error("calloc");
 	while (*p && !is_metacharacter(*p))
 	{
 		if (*p == SINGLE_QUOTE_CHAR)

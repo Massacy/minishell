@@ -1,21 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expand.c                                           :+:      :+:    :+:   */
+/*   expand_variable_sub.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/06 05:00:58 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/08 04:07:48 by imasayos         ###   ########.fr       */
+/*   Created: 2023/10/08 04:11:57 by imasayos          #+#    #+#             */
+/*   Updated: 2023/10/08 04:24:33 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-#include <stdlib.h>
-#include <string.h>
+# include "minishell.h"
 
-void	expand(t_node *node)
+bool	is_alpha_under(char c)
 {
-	expand_variable(node);
-	expand_quote_removal(node);
+	return (ft_isalpha(c) || c == '_');
+}
+
+bool	is_alpha_num_under(char c)
+{
+	return (is_alpha_under(c) || ft_isdigit(c));
+}
+
+bool	is_variable(char *s)
+{
+	return (s[0] == '$' && is_alpha_under(s[1]));
 }

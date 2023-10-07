@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/06 06:43:13 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/08 04:31:42 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,19 @@ void	prepare_pipe_parent(t_node *node);
 // expand.c
 void	expand_quote_removal(t_node *node);
 
-//
+// expand2.c
+void	append_char(char **s, char c);
+
+// expand_variable.c
+void	expand_variable(t_node *node);
+
+// expand_variable_sub.c
+bool	is_alpha_under(char c);
+bool	is_alpha_num_under(char c);
+bool	is_variable(char *s);
+
+
+// ft_strndup.c
 char	*ft_strndup(const char *s1, size_t n);
 
 #endif

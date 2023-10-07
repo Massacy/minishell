@@ -8,7 +8,8 @@ CFLAGS := -Wall -Wextra -Werror
 # INCLUDES := -I/usr/local/include
 INCLUDES := -lreadline
 SRCS := minishell.c tokenizer.c expand.c parse.c error.c destructor.c redirection.c pipe.c \
- error2.c expand2.c parse2.c redirection2.c parse3.c ft_strndup.c tokenizer2.c
+ error2.c expand2.c parse2.c redirection2.c parse3.c ft_strndup.c tokenizer2.c \
+ expand_variable.c expand_variable_sub.c
 OBJS := $(patsubst %.c, %.o, $(SRCS))
 
 all: $(NAME)
