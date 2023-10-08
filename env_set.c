@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 01:57:57 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 04:12:20 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 06:36:18 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static void	update_kv(t_kv *cur, char *value)
 		cur->value = NULL;
 	else
 	{
-		cur->value = strdup(value);
+		cur->value = ft_strdup(value);
 		if (cur->value == NULL)
 			fatal_error("strdup");
 	}
@@ -61,13 +61,13 @@ static void	insert_kv(t_map *map, char *key, char *value)
 
 	if (value == NULL)
 	{
-		new_cur = new_kv(strdup(key), NULL);
+		new_cur = new_kv(ft_strdup(key), NULL);
 		if (new_cur->key == NULL)
 			fatal_error("strdup");
 	}
 	else
 	{
-		new_cur = new_kv(strdup(key), strdup(value));
+		new_cur = new_kv(ft_strdup(key), ft_strdup(value));
 		if (new_cur->key == NULL || new_cur->value == NULL)
 			fatal_error("strdup");
 	}

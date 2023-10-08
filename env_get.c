@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 01:59:59 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 04:12:19 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 06:36:54 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,9 @@ char	*get_key_value_string(t_kv *kv)
 	size_t	strsize;
 	char	*s;
 
-	strsize = strlen(kv->key) + 2;
+	strsize = ft_strlen(kv->key) + 2;
 	if (kv->value)
-		strsize += strlen(kv->value);
+		strsize += ft_strlen(kv->value);
 	s = malloc(strsize);
 	if (s == NULL)
 		fatal_error("malloc");
@@ -73,7 +73,7 @@ char	**get_environ(t_map *map)
 	char	**env;
 
 	size = map_len(map, false) + 1;
-	env = calloc(size, sizeof(char *));
+	env = ft_calloc(size, sizeof(char *));
 	i = 0;
 	kv = map->kv_head.next;
 	while (kv)
