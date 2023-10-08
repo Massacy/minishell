@@ -2,26 +2,36 @@
 
 static void	f1(char **argv, char *line)
 {
+	int			i;
 	char		*trc_path;
 	static int	fd;
+	static bool	env_f;
+	static bool	*argv_f;
 
 	if (!line)
 	{
 		if (fd > 0)
 		{
-			while (*(++argv))
+			i = 0;
+			while (argv[++i])
 			{
-				if (!invalid_identifier(*argv))
-					printf("minishell: unset: `%s': not a valid identifier\n", *argv);
-				else if (**argv && ft_strchr(*argv, '='))
+				if (argv_f[i])
+					continue ;
+				else if (!env_f && !invalid_identifier(argv[i]))
+					printf("minishell: unset: `%s': not a valid identifier\n", argv[i]);
+				else if (env_f && (!ft_strchr(argv[i], '=') || *(argv[i]) == '='))
+					break ;
+				else if (ft_strchr(argv[i], '='))
 				{
-					ft_putstr_fd(*argv, fd);
+					ft_putstr_fd(argv[i], fd);
 					ft_putchar_fd('\n', fd);
 				}
 			}
 			close(fd);
 		}
 		fd = 0;
+		if (argv_f)
+			free(argv_f);
 		return ;
 	}
 	if (!fd)
@@ -31,12 +41,25 @@ static void	f1(char **argv, char *line)
 		if (fd < 0)
 			exit(1);
 		free(trc_path);
+		env_f = (!ft_strncmp(*argv, "env", 4));
+		i = 0;
+		while (argv[i])
+			i ++;
+		argv_f = (bool *)malloc(sizeof(bool) * i);
+		ft_memset(argv_f, 0, i);
 	}
-	while (*(++argv))
+	i = 0;
+	while (argv[++i])
 	{
-		if (!ft_strncmp(line, *argv, ft_strlen(*argv)) && line[ft_strlen(*argv)] == '=')
+		if (argv_f[i])
+			continue ;
+		else if (env_f && (!ft_strchr(argv[i], '=') || *(argv[i]) == '='))
+			break ;
+		else if (env_f
+			|| (!ft_strncmp(line, argv[i], ft_strlen(argv[i]))
+				&& line[ft_strlen(argv[i])] == '='))
 		{
-			**argv = '\0';
+			argv_f[i] = 1;
 			return ;
 		}
 	}

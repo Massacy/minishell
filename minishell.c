@@ -121,19 +121,21 @@ void exec_built_in(char **split)
 
 // 子プロセスで*lineに入っているコマンドを実行する。
 // int	interpret(char *line)
-int	interpret(t_token *tok)
+int	interpret(char **argv)
 {
 	extern char	**environ;
 	// t_token		*tok;
-	char **argv;
+	// char **argv;
 	// char		*argv[] = {line, NULL}; // 今は一つの塊だけ対応。argvは可変長なのでmallocして、そこに引数を入れていく必要がある。
-	pid_t		pid;
-	int			wstatus;
 
-	argv = token_list_to_argv(tok);
+	// argv = token_list_to_argv(tok);
 	env_translate(argv);
-	if (!ft_strncmp(argv[0], "cd", 3))
+	if (!ft_strncmp(argv[0], "echo", 5))
+		minishell_echo(argv);
+	else if (!ft_strncmp(argv[0], "cd", 3))
 		minishell_cd(argv[1]);
+	else if (!ft_strncmp(argv[0], "pwd", 4))
+		minishell_pwd();
 	else if (!ft_strncmp(argv[0], "export", 7))
 		minishell_export(argv);
 	else if (!ft_strncmp(argv[0], "unset", 6))
@@ -143,29 +145,30 @@ int	interpret(t_token *tok)
 	else if (!ft_strncmp(argv[0], "exit", 5))
 		minishell_exit(0);
 	else
-	{
-		pid = fork();
-		if (pid < 0)
-			fatal_error("fork");
-		else if (pid == 0)
-		{
-			// child process
-			// execve(line, argv, environ);
-			char *res;
-			res = search_path(argv[0]);
-			if (res)
-				execve(res, argv, environ);
-			else
-				command_not_found_error(argv[0]);
-			fatal_error("execve");
-		}
-		else
-		{
-			// parent process
-			wait(&wstatus);
-			return (WEXITSTATUS(wstatus));
-		}
-	}
+		printf("minishell: %s: command not found\n", argv[0]);
+	// {
+	// 	pid = fork();
+	// 	if (pid < 0)
+	// 		fatal_error("fork");
+	// 	else if (pid == 0)
+	// 	{
+	// 		// child process
+	// 		// execve(line, argv, environ);
+	// 		char *res;
+	// 		res = search_path(argv[0]);
+	// 		if (res)
+	// 			execve(res, argv, environ);
+	// 		else
+	// 			command_not_found_error(argv[0]);
+	// 		fatal_error("execve");
+	// 	}
+	// 	else
+	// 	{
+	// 		// parent process
+	// 		wait(&wstatus);
+	// 		return (WEXITSTATUS(wstatus));
+	// 	}
+	// }
 	return (0);
 }
 
@@ -214,6 +217,7 @@ int main(int argc, char **argv, char **envp)
 	// char **split;
 	// char path[1024];
 	int exit_status;
+	char **argv_list;
 
 	(void)argc;
 	(void)argv;
@@ -246,7 +250,8 @@ int main(int argc, char **argv, char **envp)
 		// 	i++;
 		// }
 		expand(tok);
-		exit_status = interpret(tok);
+		argv_list = token_list_to_argv(tok);
+		exit_status = interpret(argv_list);
 		// debug : printf("exit_status : %d\n", exit_status);
 		// res = search_path(tok->word); // 一旦先頭のtokのみ実行。
 

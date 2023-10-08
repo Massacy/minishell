@@ -36,15 +36,14 @@ typedef struct s_token
 	t_token				*next;
 }						t_token;
 
-# define PATH_MAX 1024
-
 t_token					*tokenize(char *line);
 
 // minishell.c
 void					fatal_error(const char *msg);
 void					expand(t_token *tok);
 char					*search_path(const char *filename);
-int						interpret(t_token *tok);
+// int					interpret(t_token *tok);
+int						interpret(char **argv);
 
 // tokenizer.c
 bool					is_metacharacter(char c);
@@ -55,7 +54,9 @@ void	set_signal();
 void	signal_handler(int sig);
 
 // builtin.c
+void	minishell_echo(char **argv);
 void	minishell_cd(char *dir);
+void	minishell_pwd(void);
 void	minishell_export(char **argv);
 void	minishell_unset(char **argv);
 void	minishell_env(char **argv);
