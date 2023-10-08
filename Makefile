@@ -1,7 +1,7 @@
 NAME		= minishell
 NAME_LIBFT	= libft/libft.a
 NAME_GNL	= gnl/get_next_line
-CC			= cc
+CC			= gcc
 # CFLAGS := -Wall -Wextra -Werror -fsanitize=thread -g
 # CFLAGS := -Wall -Wextra -Werror -fsanitize=address -g
 # INCLUDES := -I/usr/local/include

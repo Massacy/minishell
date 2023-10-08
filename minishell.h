@@ -11,11 +11,13 @@
 # include <unistd.h>
 # include <signal.h>
 # include <fcntl.h>
+# include <curses.h>
 
 # define SINGLE_QUOTE_CHAR '\''
 # define DOUBLE_QUOTE_CHAR '\"'
 # define RC_PATH "/.minishell_rc"
 # define TRC_PATH "/.minishell_trc"
+# define PATH_MAX 4096
 
 typedef enum e_token_kind
 {
@@ -42,6 +44,7 @@ t_token					*tokenize(char *line);
 void					fatal_error(const char *msg);
 void					expand(t_token *tok);
 char					*search_path(const char *filename);
+int						interpret(t_token *tok);
 
 // tokenizer.c
 bool					is_metacharacter(char c);
@@ -59,6 +62,7 @@ void	minishell_env(char **argv);
 void	minishell_exit(int exit_status);
 
 // environment.c
+char	*ft_getenv(char *name);
 void	env_init(char **envp);
 void	env_translate(char **argv);
 void	env_loop(char *rc_file, char **argv, void f(char **, char *));

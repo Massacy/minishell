@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static char	*ft_getenv(char *name)
+char	*ft_getenv(char *name)
 {
 	int		i;
 	int		fd;
@@ -63,12 +63,13 @@ void	env_init(char **envp)
 		{
 			ft_putstr_fd("SHLVL=", fd);
 			ft_putnbr_fd(ft_atoi(&((*envp)[6])) + 1, fd);
+			ft_putchar_fd('\n', fd);
 		}
-		else
+		else if (ft_strncmp(*envp, "OLDPWD=", 7))
 		{
 			ft_putstr_fd(*envp, fd);
+			ft_putchar_fd('\n', fd);
 		}
-		ft_putchar_fd('\n', fd);
 		envp ++;
 	}
 	close(fd);

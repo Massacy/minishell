@@ -214,7 +214,7 @@ int main(int argc, char **argv, char **envp)
 	// char **split;
 	// char path[1024];
 	int exit_status;
-	
+
 	(void)argc;
 	(void)argv;
 	prompt = NULL;
@@ -225,7 +225,10 @@ int main(int argc, char **argv, char **envp)
 	{
 		prompt = readline("$> ");
 		if (prompt == NULL)
+		{
+			printf("\033[1A$> ");
 			break;
+		}
 		if (ft_strlen(prompt) == 0)
 			continue;
 		// split = ft_split(prompt, ' '); -> tokenizeする。
