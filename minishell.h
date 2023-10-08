@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/08 19:48:47 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 04:13:24 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ t_token	*tokenize(char *line, bool *syntax_error);
 // minishell.c
 
 // exec.c
-int		exec(t_node *node);
+int		exec(t_node *node, t_map *env);
 char	*search_path(const char *filename);
 
 // exec_sub.c
@@ -152,5 +152,23 @@ char	**token_list_to_argv(t_token *tok);
 
 void	setup_signal(void);
 void	reset_signal(void);
+
+// env_init.c
+bool	is_identifier(const char *s);
+t_map	*init_default_env_in_map(void);
+t_map	*new_map(void);
+t_kv	*new_kv(char *key, char *value);
+void	free_3ptrs(void *ptr1, void *ptr2, void *ptr3);
+
+// env_set.c
+int		separate_str_to_kv(t_map *map, char *str, bool is_default_env);
+int		set_kv_in_map(t_map *map, char *key, char *value);
+int		unset_kv_in_map(t_map *map, const char *key);
+
+// env_get.c
+size_t	map_len(t_map *map, bool count_null_value);
+char	*get_key_value_string(t_kv *kv);
+char	*get_kv_value(t_map *map, char *key);
+char	**get_environ(t_map *map);
 
 #endif

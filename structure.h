@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/01 17:46:06 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/06 06:45:25 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 00:59:10 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,17 @@ typedef struct s_node
 	int						outpipe[2];
 	t_node					*command;
 }							t_node;
+
+typedef struct s_keyvalue
+{
+	char					*key;
+	char					*value;
+	struct s_keyvalue		*next;
+}							t_kv;
+
+typedef struct s_map
+{
+	t_kv					kv_head;
+}							t_map;
 
 #endif

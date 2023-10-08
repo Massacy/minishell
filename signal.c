@@ -6,13 +6,19 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 07:30:51 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/08 20:01:44 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 05:05:49 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 volatile sig_atomic_t g_sig = 0;
+
+/*   
+	入力の偽装
+    TIOCSTI   const char *argp
+    指定されたバイトを入力キューに挿入する。
+*/
 
 void	handler(int signum)
 {
@@ -78,7 +84,7 @@ void	setup_signal(void)
 	// extern int	_rl_echo_control_chars; // ←これ何
 
 	// _rl_echo_control_chars = 0;
-	// rl_outstream = stderr; // rlの出力先を設定
+	rl_outstream = stderr; // rlの出力先を設定
 	// if (isatty(STDIN_FILENO))
 	// 	rl_event_hook = check_state; // rlがread中に何も入力されないと1秒間に10回以上定期的に呼ぶ関数を設定
 	ignore_sig(SIGQUIT);

@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 05:43:58 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/08 19:30:27 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 05:17:53 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ char	*search_path(const char *filename)
 
 // }
 
-pid_t	exec_pipeline(t_node *node)
+pid_t	exec_pipeline(t_node *node, t_map *env)
 {
 	extern char	**environ;
 	const char	*path;
@@ -67,17 +67,16 @@ pid_t	exec_pipeline(t_node *node)
 		if (ft_strchr(path, '/') == NULL)
 			path = search_path(path);
 		validate_access(path, argv[0]);
-		execve(path, argv, environ);
+		execve(path, argv, get_environ(env));
 		reset_redirect(node->command->redirects);
 		fatal_error("execve");
 	}
 	prepare_pipe_parent(node);
 	if (node->next)
-		return (exec_pipeline(node->next));
+		return (exec_pipeline(node->next, env));
 	return (pid);
 }
 
-// これらのマクロ使っていい？ TODO 
 int	wait_pipeline(pid_t last_pid)
 {
 	pid_t	wait_result;
@@ -93,7 +92,6 @@ int	wait_pipeline(pid_t last_pid)
 				status = 128 + WTERMSIG(wstatus);
 			else
 				status = WEXITSTATUS(wstatus);
-				// status = wstatus & 255; // 動かない
 		}
 		else if (wait_result < 0)
 		{
@@ -109,14 +107,14 @@ int	wait_pipeline(pid_t last_pid)
 	return (status);
 }
 
-int	exec(t_node *node)
+int	exec(t_node *node, t_map *env)
 {
 	int		status;
 	pid_t	last_pid;
 
 	if (open_redirect_file(node) < 0)
 		return (ERROR_OPEN_REDIR);
-	last_pid = exec_pipeline(node);
+	last_pid = exec_pipeline(node, env);
 	status = wait_pipeline(last_pid);
 	return (status);
 }

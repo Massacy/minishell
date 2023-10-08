@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 06:01:01 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/08 19:31:08 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 04:42:50 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 extern sig_atomic_t g_sig;
 
 // 子プロセスで*lineに入っているコマンドを実行する。
-void	interpret(char *line, int *stat_loc)
+void	interpret(char *line, int *stat_loc, t_map *env)
 {
 	t_token	*tok;
 	t_node	*node;
@@ -35,7 +35,7 @@ void	interpret(char *line, int *stat_loc)
 		else
 		{
 			expand(node, stat_loc);
-			*stat_loc = exec(node);
+			*stat_loc = exec(node, env);
 		}
 		free_node(node);
 	}
@@ -52,8 +52,10 @@ int	main(void)
 {
 	char	*prompt;
 	int		exit_status;
+	t_map	*env;
 
 	prompt = NULL;
+	env = init_default_env_in_map();
 	setup_signal();
 	exit_status = 0;
 	while (1)
@@ -64,7 +66,7 @@ int	main(void)
 		if (ft_strlen(prompt) == 0)
 			continue ;
 		add_history(prompt);
-		interpret(prompt, &exit_status);
+		interpret(prompt, &exit_status, env);
 		free(prompt);
 	}
 	exit(exit_status);

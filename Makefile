@@ -13,7 +13,7 @@ CFLAGS := -Wall -Wextra -Werror $(INCLUDES)
 SRCS := minishell.c tokenizer.c expand.c parse.c error.c destructor.c redirection.c pipe.c \
  error2.c expand2.c parse2.c redirection2.c parse3.c ft_strndup.c tokenizer2.c \
  expand_variable.c expand_variable_sub.c expand_variable_param.c exec.c exec_sub.c \
- signal.c
+ signal.c env_init.c env_set.c env_get.c
 
 OBJS := $(patsubst %.c, %.o, $(SRCS))
 
