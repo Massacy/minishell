@@ -6,11 +6,13 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 06:01:01 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/08 05:52:28 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/08 19:31:08 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+extern sig_atomic_t g_sig;
 
 // 子プロセスで*lineに入っているコマンドを実行する。
 void	interpret(char *line, int *stat_loc)
@@ -46,14 +48,13 @@ void	interpret(char *line, int *stat_loc)
 //     system("leaks -q minishell");
 // }
 
-int	main(int argc, char const *argv[])
+int	main(void)
 {
 	char	*prompt;
 	int		exit_status;
 
-	(void)argc;
-	(void)argv;
 	prompt = NULL;
+	setup_signal();
 	exit_status = 0;
 	while (1)
 	{

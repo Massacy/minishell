@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/08 06:57:51 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/08 19:48:47 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,18 @@
 # include "ft_dprintf/ft_dprintf.h"
 # include "libft/libft.h"
 # include "structure.h"
+# include <stdio.h>
 # include <errno.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <stdbool.h>
-# include <stdio.h>
+
 # include <stdlib.h>
 # include <string.h>
 # include <sys/types.h>
 # include <unistd.h>
+# include <signal.h>
+#include <sys/ioctl.h>
 
 # define ERROR_TOKENIZE 258
 # define ERROR_PARSE 258
@@ -144,5 +147,10 @@ char	*ft_strndup(const char *s1, size_t n);
 char	*accessible_path(char *path);
 void	validate_access(const char *path, const char *filename);
 char	**token_list_to_argv(t_token *tok);
+
+// signal.h
+
+void	setup_signal(void);
+void	reset_signal(void);
 
 #endif

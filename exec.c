@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 05:43:58 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/08 06:56:37 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/08 19:30:27 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ char	*search_path(const char *filename)
 
 // }
 
-int	exec_pipeline(t_node *node)
+pid_t	exec_pipeline(t_node *node)
 {
 	extern char	**environ;
 	const char	*path;
@@ -59,6 +59,7 @@ int	exec_pipeline(t_node *node)
 		fatal_error("fork");
 	else if (pid == 0)
 	{
+		reset_signal();
 		prepare_pipe_child(node);
 		do_redirect(node->command->redirects);
 		argv = token_list_to_argv(node->command->args);
@@ -76,6 +77,7 @@ int	exec_pipeline(t_node *node)
 	return (pid);
 }
 
+// これらのマクロ使っていい？ TODO 
 int	wait_pipeline(pid_t last_pid)
 {
 	pid_t	wait_result;
@@ -85,16 +87,25 @@ int	wait_pipeline(pid_t last_pid)
 	while (1)
 	{
 		wait_result = wait(&wstatus);
-		if (wait_result == last_pid)
-			status = WEXITSTATUS(wstatus); // TODO 使っていいか確認
-											// status = wstatus & 255; // 動かない
+		if (wait_result == last_pid)											
+		{
+			if (WIFSIGNALED(wstatus))
+				status = 128 + WTERMSIG(wstatus);
+			else
+				status = WEXITSTATUS(wstatus);
+				// status = wstatus & 255; // 動かない
+		}
 		else if (wait_result < 0)
 		{
 			if (errno == ECHILD)
 				break ;
+			else if (errno == EINTR)
+				continue ;
+			else
+				fatal_error("wait");
 		}
 	}
-	waitpid(last_pid, &wstatus, 0);
+	// waitpid(last_pid, &wstatus, 0);
 	return (status);
 }
 
