@@ -18,6 +18,7 @@ SRCS := minishell.c tokenizer.c expand.c parse.c error.c destructor.c redirectio
 OBJS := $(patsubst %.c, %.o, $(SRCS))
 
 all: $(NAME)
+	@echo 'set echo-control-characters off' > ~/.inputrc
 
 $(NAME_FT_DPRINTF):
 	make -C ft_dprintf
