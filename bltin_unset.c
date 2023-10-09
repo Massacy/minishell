@@ -11,24 +11,7 @@ static void	f1(char **argv, char *line)
 	if (!line)
 	{
 		if (fd > 0)
-		{
-			i = 0;
-			while (argv[++i])
-			{
-				if (argv_f[i])
-					continue ;
-				else if (!env_f && !invalid_identifier(argv[i]))
-					printf("minishell: unset: `%s': not a valid identifier\n", argv[i]);
-				else if (env_f && (!ft_strchr(argv[i], '=') || *(argv[i]) == '='))
-					break ;
-				else if (ft_strchr(argv[i], '='))
-				{
-					ft_putstr_fd(argv[i], fd);
-					ft_putchar_fd('\n', fd);
-				}
-			}
 			close(fd);
-		}
 		fd = 0;
 		if (argv_f)
 			free(argv_f);
@@ -55,7 +38,7 @@ static void	f1(char **argv, char *line)
 			continue ;
 		else if (env_f && (!ft_strchr(argv[i], '=') || *(argv[i]) == '='))
 			break ;
-		else if (env_f
+		else if ((env_f && !ft_strncmp(line, argv[i], ft_strchr(argv[i], '=') - argv[i]))
 			|| (!ft_strncmp(line, argv[i], ft_strlen(argv[i]))
 				&& line[ft_strlen(argv[i])] == '='))
 		{
@@ -92,8 +75,16 @@ static void	f2(char **argv, char *line)
 
 void	minishell_unset(char **argv)
 {
+	char	**tmp;
 	char	*trc_path;
 
+	tmp = argv;
+	if (ft_strncmp(*argv, "env", 4))
+		while (++argv)
+			if (check_invalid_identifier(*argv) || ft_strchr(*argv, '='))
+				printf("minishell: unset: `%s': not a valid identifier\n", *argv);
+	argv = tmp;
+	check_overlap_env_in_argv(argv);
 	env_loop(RC_PATH, argv, f1);
 	env_loop(TRC_PATH, argv, f2);
 	trc_path = ft_strjoin(getenv("HOME"), TRC_PATH);

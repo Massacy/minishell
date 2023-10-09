@@ -8,7 +8,10 @@ void	minishell_echo(char **argv)
 	if (!f)
 		argv ++;
 	while (*(++argv))
+	{
 		printf("%s", *argv);
+		printf("%c", !(!argv[1]) * ' ');
+	}
 	if (f)
 		printf("\n");
 }

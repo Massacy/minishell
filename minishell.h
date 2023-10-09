@@ -67,6 +67,9 @@ char	*ft_getenv(char *name);
 void	env_init(char **envp);
 void	env_translate(char **argv);
 void	env_loop(char *rc_file, char **argv, void f(char **, char *));
-int		invalid_identifier(char *s);
+
+// builtin_export_unset_utils.c
+int		check_invalid_identifier(char *s);
+void	check_overlap_env_in_argv(char **argv);
 
 #endif

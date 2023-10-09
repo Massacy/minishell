@@ -10,8 +10,8 @@ INCLUDES	= -I include -I$(RLDIR)/include
 CFLAGS		= -Wall -Wextra -Werror $(INCLUDES)
 LIBS		= -lreadline -L$(RLDIR)/lib
 SRCS		= minishell.c tokenizer.c expand.c parse.c signal.c environment.c\
-			  bltin_echo.c bltin_cd.c bltin_pwd.c\
-			  bltin_export.c bltin_unset.c bltin_env.c bltin_exit.c
+			  bltin_echo.c bltin_cd.c bltin_pwd.c bltin_env.c bltin_exit.c\
+			  bltin_export.c bltin_unset.c bltin_export_unset_utils.c
 OBJS		= $(SRCS:%.c=%.o)
 
 all: $(NAME)

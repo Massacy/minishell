@@ -32,22 +32,6 @@ char	*ft_getenv(char *name)
 	return value;
 }
 
-int	invalid_identifier(char *s)
-{
-	if (!*s)
-		return (1);
-	if (!ft_isalpha(*s) && *s != '_')
-		return (0);
-	s ++;
-	while (*s && *s != '=')
-	{
-		if (!ft_isalnum(*s) && *s != '_')
-			return (0);
-		s ++;
-	}
-	return (1);
-}
-
 void	env_init(char **envp)
 {
 	int		fd;

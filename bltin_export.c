@@ -15,13 +15,7 @@ static void	f1(char **argv, char *line)
 			i = 0;
 			while (argv[++i])
 			{
-				if (argv_f[i])
-					continue ;
-				else if (!env_f && !invalid_identifier(argv[i]))
-					printf("minishell: export: `%s': not a valid identifier\n", argv[i]);
-				else if (env_f && (!ft_strchr(argv[i], '=') || *(argv[i]) == '='))
-					break ;
-				else if (ft_strchr(argv[i], '='))
+				if (!argv_f[i] && ft_strchr(argv[i], '='))
 				{
 					ft_putstr_fd(argv[i], fd);
 					ft_putchar_fd('\n', fd);
@@ -109,10 +103,18 @@ static void	f3(char **argv, char *line)
 
 void	minishell_export(char **argv)
 {
+	char	**tmp;
 	char	*trc_path;
 
 	if (argv[1])
 	{
+		tmp = argv;
+		if (ft_strncmp(*argv, "env", 4))
+			while (++argv)
+				if (check_invalid_identifier(*argv))
+					printf("minishell: export: `%s': not a valid identifier\n", *argv);
+		argv = tmp;
+		check_overlap_env_in_argv(argv);
 		env_loop(RC_PATH, argv, f1);
 		env_loop(TRC_PATH, argv, f2);
 		trc_path = ft_strjoin(getenv("HOME"), TRC_PATH);
