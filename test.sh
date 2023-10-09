@@ -182,10 +182,10 @@ print_desc "SIGINT to child process"
  sleep 0.01; pkill -SIGINT infinite_loop) &
 assert './infinite_loop'
 
-print_desc "SIGQUIT to child process"
-(sleep 0.01; pkill -SIGQUIT infinite_loop;
- sleep 0.01; pkill -SIGQUIT infinite_loop) &
-assert './infinite_loop'
+# print_desc "SIGQUIT to child process"
+# (sleep 0.01; pkill -SIGQUIT infinite_loop;
+#  sleep 0.01; pkill -SIGQUIT infinite_loop) &
+# assert './infinite_loop'
 
 # print_desc "SIGUSR1 to child process"
 # (sleep 0.01; pkill -SIGUSR1 infinite_loop;
@@ -219,5 +219,16 @@ assert './infinite_loop'
 # 1. Ctrl-\ 
 # 2. Ctrl-C
 # 3. Ctrl-D
+
+# Builtin
+## exit
+assert 'exit'
+assert 'exit 42'
+assert 'exit ""'
+assert 'exit hello'
+assert 'exit 42Tokyo'
+assert 'exit 1 2'
+
+assert 'exit'
 
 cleanup

@@ -5,7 +5,8 @@ CC := cc
 RLDIR    = $(shell brew --prefix readline)
 INCLUDES = -I include -I$(RLDIR)/include
 LIBS     = -lreadline -L$(RLDIR)/lib
-CFLAGS := -Wall -Wextra -Werror $(INCLUDES)
+CFLAGS   = -Wall -Wextra -Werror $(INCLUDES)
+CFLAGS += -fsanitize=address -g
 # CFLAGS := -Wall -Wextra -Werror -fsanitize=thread -g
 # CFLAGS := -Wall -Wextra -Werror -fsanitize=address -g
 # INCLUDES := -I/usr/local/include

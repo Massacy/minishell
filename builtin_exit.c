@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 14:32:26 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 14:49:55 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 16:28:08 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ static bool	is_out_of_int(const char *str)
 	long long	num;
 	int			sign;
 
+	if (!*str)
+		return (true);
 	sign = 1;
 	if (*str == '-')
 	{
