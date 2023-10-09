@@ -34,7 +34,7 @@ cleanup() {
 assert() {
 	COMMAND="$1"
 	shift
-	printf '%-50s:' "[$COMMAND]"
+	printf '%-60s:' "[$COMMAND]"
 	# exit status
 	echo -n -e "$COMMAND" | bash >cmp 2>&-
 	expected=$?
@@ -182,15 +182,15 @@ print_desc "SIGINT to child process"
  sleep 0.01; pkill -SIGINT infinite_loop) &
 assert './infinite_loop'
 
-# print_desc "SIGQUIT to child process"
-# (sleep 0.01; pkill -SIGQUIT infinite_loop;
-#  sleep 0.01; pkill -SIGQUIT infinite_loop) &
-# assert './infinite_loop'
+print_desc "SIGQUIT to child process"
+(sleep 0.01; pkill -SIGQUIT infinite_loop;
+ sleep 0.01; pkill -SIGQUIT infinite_loop) &
+assert './infinite_loop'
 
-# print_desc "SIGUSR1 to child process"
-# (sleep 0.01; pkill -SIGUSR1 infinite_loop;
-#  sleep 0.01; pkill -SIGUSR1 infinite_loop) &
-# assert './infinite_loop'
+print_desc "SIGUSR1 to child process"
+(sleep 0.01; pkill -SIGUSR1 infinite_loop;
+ sleep 0.01; pkill -SIGUSR1 infinite_loop) &
+assert './infinite_loop'
 
 # Manual Debug
 # $ ./minishell
@@ -229,6 +229,17 @@ assert 'exit hello'
 assert 'exit 42Tokyo'
 assert 'exit 1 2'
 
-assert 'exit'
+## export
+assert 'export | grep nosuch | sort'
+assert 'export nosuch\n export | grep nosuch | sort'
+assert 'export nosuch=fuga\n export | grep nosuch | sort'
+assert 'export nosuch=fuga hoge=nosuch\n export | grep nosuch | sort'
+assert 'export [invalid]'
+assert 'export [invalid_nosuch]\n export | grep nosuch | sort'
+assert 'export [invalid]=nosuch\n export | grep nosuch | sort'
+assert 'export [invalid] nosuch hoge=nosuch\n export | grep nosuch | sort'
+assert 'export nosuch [invalid] hoge=nosuch\n export | grep nosuch | sort'
+assert 'export nosuch hoge=nosuch [invalid]\n export | grep nosuch | sort'
+assert 'export nosuch="nosuch2=hoge"\nexport $nosuch\n export | grep nosuch | sort'
 
 cleanup

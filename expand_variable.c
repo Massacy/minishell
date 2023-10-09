@@ -6,13 +6,13 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 04:09:22 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/08 06:41:49 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 21:02:06 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	expand_variable_str(char **dst, char **rest, char *p)
+void	expand_variable_str(char **dst, char **rest, char *p, t_map *env) 
 {
 	char	*name;
 	char	*value;
@@ -29,7 +29,7 @@ void	expand_variable_str(char **dst, char **rest, char *p)
 	append_char(&name, *p++);
 	while (is_alpha_num_under(*p))
 		append_char(&name, *p++);
-	value = getenv(name);
+	value = get_kv_value(env, name);
 	free(name);
 	if (value)
 		while (*value)
@@ -55,7 +55,7 @@ void	append_single_quote(char **dst, char **rest, char *p)
 		assert_error("Expected single quote");
 }
 
-void	append_double_quote(char **dst, char **rest, char *p, int *last_status)
+void	append_double_quote(char **dst, char **rest, char *p, t_es *es)
 {
 	if (*p == DOUBLE_QUOTE_CHAR)
 	{
@@ -65,9 +65,9 @@ void	append_double_quote(char **dst, char **rest, char *p, int *last_status)
 			if (*p == '\0')
 				assert_error("Unclosed double quote");
 			else if (is_variable(p))
-				expand_variable_str(dst, &p, p);
+				expand_variable_str(dst, &p, p, es->env);
 			else if (is_special_parameter(p))
-				expand_special_parameter_str(dst, &p, p, last_status);
+				expand_special_parameter_str(dst, &p, p, es->last_status);
 			else
 				append_char(dst, *p++);
 		}
@@ -78,7 +78,7 @@ void	append_double_quote(char **dst, char **rest, char *p, int *last_status)
 		assert_error("Expected double quote");
 }
 
-void	expand_variable_tok(t_token *tok, int *last_status)
+void	expand_variable_tok(t_token *tok, t_es *es)
 {
 	char	*new_word;
 	char	*p;
@@ -94,26 +94,26 @@ void	expand_variable_tok(t_token *tok, int *last_status)
 		if (*p == SINGLE_QUOTE_CHAR)
 			append_single_quote(&new_word, &p, p);
 		else if (*p == DOUBLE_QUOTE_CHAR)
-			append_double_quote(&new_word, &p, p, last_status);
+			append_double_quote(&new_word, &p, p, es);
 		else if (is_variable(p))
-			expand_variable_str(&new_word, &p, p);
+			expand_variable_str(&new_word, &p, p, es->env);
 		else if (is_special_parameter(p))
-			expand_special_parameter_str(&new_word, &p, p, last_status);
+			expand_special_parameter_str(&new_word, &p, p, es->last_status);
 		else
 			append_char(&new_word, *p++);
 	}
 	free(tok->word);
 	tok->word = new_word;
-	expand_variable_tok(tok->next, last_status);
+	expand_variable_tok(tok->next, es);
 }
 
-void	expand_variable(t_node *node, int *last_status)
+void	expand_variable(t_node *node, t_es *es)
 {
 	if (node == NULL)
 		return ;
-	expand_variable_tok(node->args, last_status);
-	expand_variable_tok(node->filename, last_status);
-	expand_variable(node->redirects, last_status);
-	expand_variable(node->command, last_status);
-	expand_variable(node->next, last_status);
+	expand_variable_tok(node->args, es);
+	expand_variable_tok(node->filename, es);
+	expand_variable(node->redirects, es);
+	expand_variable(node->command, es);
+	expand_variable(node->next, es);
 }

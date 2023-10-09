@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 05:43:58 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 14:19:24 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 20:41:23 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,11 @@ char	*search_path(const char *filename)
 	return (NULL);
 }
 
-static void child_part(t_node *node, t_map *env)
+int exec_nonbuiltin(t_node *node, t_map *env)
 {
 	char		**argv;
 	const char	*path;
 
-	reset_signal();
-	prepare_pipe_child(node);
 	do_redirect(node->command->redirects);
 	argv = token_list_to_argv(node->command->args);
 	path = argv[0];
@@ -56,10 +54,9 @@ static void child_part(t_node *node, t_map *env)
 	free_argv(argv);
 	reset_redirect(node->command->redirects);
 	fatal_error("execve");
-
 }
 
-pid_t	exec_pipeline(t_node *node, t_map *env)
+pid_t	exec_pipeline(t_node *node, t_es *es)
 {
 	extern char	**environ;
 	pid_t		pid;
@@ -71,10 +68,17 @@ pid_t	exec_pipeline(t_node *node, t_map *env)
 	if (pid < 0)
 		fatal_error("fork");
 	else if (pid == 0)
-		child_part(node, env);
+	{
+		reset_signal();
+		prepare_pipe_child(node);
+		if (is_builtin(node))
+			exit(exec_builtin(node, es));
+		else
+			exec_nonbuiltin(node, es->env);
+	}
 	prepare_pipe_parent(node);
 	if (node->next)
-		return (exec_pipeline(node->next, env));
+		return (exec_pipeline(node->next, es));
 	return (pid);
 }
 
@@ -107,7 +111,7 @@ int	wait_pipeline(pid_t last_pid)
 	return (status);
 }
 
-int	exec(t_node *node, int *last_status, t_map *env)
+int	exec(t_node *node, t_es *es)
 {
 	int		status;
 	pid_t	last_pid;
@@ -115,10 +119,10 @@ int	exec(t_node *node, int *last_status, t_map *env)
 	if (open_redirect_file(node) < 0)
 		return (ERROR_OPEN_REDIR);
 	if (node->next == NULL && is_builtin(node)) // todo なぜ node->next == NULLのときだけ？
-		status = exec_builtin(node, last_status);
+		status = exec_builtin(node, es);
 	else
 	{
-		last_pid = exec_pipeline(node, env);
+		last_pid = exec_pipeline(node, es);
 		status = wait_pipeline(last_pid);
 	}
 	return (status);

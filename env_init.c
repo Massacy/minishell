@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 22:30:47 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 03:58:55 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 19:30:57 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ t_map	*init_default_env_in_map(void)
 	i = 0;
 	while (environ[i])
 	{
-		separate_str_to_kv(map, environ[i], true);
+		separate_str_to_kv(map, environ[i], false);
 		i++;
 	}
 	return (map);

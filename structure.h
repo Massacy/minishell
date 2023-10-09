@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/01 17:46:06 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 00:59:10 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 20:51:11 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,5 +72,11 @@ typedef struct s_map
 {
 	t_kv					kv_head;
 }							t_map;
+
+typedef struct s_env_and_status
+{
+	t_map	*env;
+	int 	*last_status;
+}			t_es;
 
 #endif

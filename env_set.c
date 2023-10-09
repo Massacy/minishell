@@ -6,13 +6,13 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 01:57:57 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 06:36:18 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 20:07:35 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	separate_str_to_kv(t_map *map, char *str, bool is_default_env)
+int	separate_str_to_kv(t_map *map, char *str, bool allow_empty_value)
 {
 	char	*pos_eq;
 	char	*key;
@@ -22,7 +22,7 @@ int	separate_str_to_kv(t_map *map, char *str, bool is_default_env)
 	pos_eq = ft_strchr(str, '=');
 	if (pos_eq == NULL)
 	{
-		if (is_default_env)
+		if (!allow_empty_value)
 			return (-1);
 		key = ft_strdup(str);
 		value = NULL;
