@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 04:13:24 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 14:47:10 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@
 # include <sys/types.h>
 # include <unistd.h>
 # include <signal.h>
-#include <sys/ioctl.h>
+# include <sys/ioctl.h>
+# include <limits.h>
 
 # define ERROR_TOKENIZE 258
 # define ERROR_PARSE 258
@@ -42,7 +43,7 @@ t_token	*tokenize(char *line, bool *syntax_error);
 // minishell.c
 
 // exec.c
-int		exec(t_node *node, t_map *env);
+int		exec(t_node *node, int *last_status, t_map *env);
 char	*search_path(const char *filename);
 
 // exec_sub.c
@@ -170,5 +171,12 @@ size_t	map_len(t_map *map, bool count_null_value);
 char	*get_key_value_string(t_kv *kv);
 char	*get_kv_value(t_map *map, char *key);
 char	**get_environ(t_map *map);
+
+// builtin.c
+bool	is_builtin(t_node *node);
+int		exec_builtin(t_node *node, int *last_status);
+
+// builtin_exit.c
+int		builtin_exit(char **argv, int *last_status);
 
 #endif

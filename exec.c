@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 05:43:58 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 05:17:53 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 14:19:24 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,17 +39,30 @@ char	*search_path(const char *filename)
 	return (NULL);
 }
 
-// static void child_part()
-// {
+static void child_part(t_node *node, t_map *env)
+{
+	char		**argv;
+	const char	*path;
 
-// }
+	reset_signal();
+	prepare_pipe_child(node);
+	do_redirect(node->command->redirects);
+	argv = token_list_to_argv(node->command->args);
+	path = argv[0];
+	if (ft_strchr(path, '/') == NULL)
+		path = search_path(path);
+	validate_access(path, argv[0]);
+	execve(path, argv, get_environ(env));
+	free_argv(argv);
+	reset_redirect(node->command->redirects);
+	fatal_error("execve");
+
+}
 
 pid_t	exec_pipeline(t_node *node, t_map *env)
 {
 	extern char	**environ;
-	const char	*path;
 	pid_t		pid;
-	char		**argv;
 
 	if (node == NULL)
 		return (-1);
@@ -58,19 +71,7 @@ pid_t	exec_pipeline(t_node *node, t_map *env)
 	if (pid < 0)
 		fatal_error("fork");
 	else if (pid == 0)
-	{
-		reset_signal();
-		prepare_pipe_child(node);
-		do_redirect(node->command->redirects);
-		argv = token_list_to_argv(node->command->args);
-		path = argv[0];
-		if (ft_strchr(path, '/') == NULL)
-			path = search_path(path);
-		validate_access(path, argv[0]);
-		execve(path, argv, get_environ(env));
-		reset_redirect(node->command->redirects);
-		fatal_error("execve");
-	}
+		child_part(node, env);
 	prepare_pipe_parent(node);
 	if (node->next)
 		return (exec_pipeline(node->next, env));
@@ -103,18 +104,22 @@ int	wait_pipeline(pid_t last_pid)
 				fatal_error("wait");
 		}
 	}
-	// waitpid(last_pid, &wstatus, 0);
 	return (status);
 }
 
-int	exec(t_node *node, t_map *env)
+int	exec(t_node *node, int *last_status, t_map *env)
 {
 	int		status;
 	pid_t	last_pid;
 
 	if (open_redirect_file(node) < 0)
 		return (ERROR_OPEN_REDIR);
-	last_pid = exec_pipeline(node, env);
-	status = wait_pipeline(last_pid);
+	if (node->next == NULL && is_builtin(node)) // todo なぜ node->next == NULLのときだけ？
+		status = exec_builtin(node, last_status);
+	else
+	{
+		last_pid = exec_pipeline(node, env);
+		status = wait_pipeline(last_pid);
+	}
 	return (status);
 }

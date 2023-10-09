@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 06:01:01 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 04:42:50 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 14:53:51 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	interpret(char *line, int *stat_loc, t_map *env)
 		else
 		{
 			expand(node, stat_loc);
-			*stat_loc = exec(node, env);
+			*stat_loc = exec(node, stat_loc, env);
 		}
 		free_node(node);
 	}
@@ -54,6 +54,7 @@ int	main(void)
 	int		exit_status;
 	t_map	*env;
 
+	rl_outstream = stderr; 
 	prompt = NULL;
 	env = init_default_env_in_map();
 	setup_signal();
