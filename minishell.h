@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/06 06:43:13 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 21:11:10 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,19 @@
 # include "ft_dprintf/ft_dprintf.h"
 # include "libft/libft.h"
 # include "structure.h"
+# include <stdio.h>
 # include <errno.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <stdbool.h>
-# include <stdio.h>
+
 # include <stdlib.h>
 # include <string.h>
 # include <sys/types.h>
 # include <unistd.h>
+# include <signal.h>
+# include <sys/ioctl.h>
+# include <limits.h>
 
 # define ERROR_TOKENIZE 258
 # define ERROR_PARSE 258
@@ -37,10 +41,37 @@
 t_token	*tokenize(char *line, bool *syntax_error);
 
 // minishell.c
-void	fatal_error(const char *msg);
-void	expand(t_node *node);
+
+// exec.c
+int		exec(t_node *node, t_es *es);
 char	*search_path(const char *filename);
+int 	exec_nonbuiltin(t_node *node, t_map *env) __attribute__((noreturn));
+
+// exec_sub.c
 void	validate_access(const char *path, const char *filename);
+char	*accessible_path(char *path);
+char	**token_list_to_argv(t_token *tok);
+
+// expand.c
+void	expand(t_node *node, t_es *es);
+
+// expand2.c
+void	append_char(char **s, char c);
+void	expand_quote_removal(t_node *node);
+
+// expand_variable.c
+void	expand_variable(t_node *node, t_es *es);
+
+// expand_variable_sub.c
+bool	is_alpha_under(char c);
+bool	is_alpha_num_under(char c);
+bool	is_variable(char *s);
+void	append_num(char **dst, unsigned int num);
+
+// expand_variable_param.c
+void	expand_special_parameter_str(char **dst, char **rest, char *p,
+			int *last_status);
+bool	is_special_parameter(char *s);
 
 // tokenizer.c
 bool	is_metacharacter(char c);
@@ -54,6 +85,7 @@ bool	is_word(const char *s);
 // error.c
 void	fatal_error(const char *msg) __attribute__((noreturn));
 void	assert_error(const char *msg) __attribute__((noreturn));
+void	builtin_error(const char *func, const char *str, const char *err);
 void	todo(const char *msg) __attribute__((noreturn));
 
 // error2.c
@@ -104,10 +136,48 @@ void	prepare_pipe(t_node *node);
 void	prepare_pipe_child(t_node *node);
 void	prepare_pipe_parent(t_node *node);
 
-// expand.c
-void	expand_quote_removal(t_node *node);
 
-//
+// ft_strndup.c
 char	*ft_strndup(const char *s1, size_t n);
+
+// exec_sub.c
+char	*accessible_path(char *path);
+void	validate_access(const char *path, const char *filename);
+char	**token_list_to_argv(t_token *tok);
+
+// signal.h
+void	setup_signal(void);
+void	reset_signal(void);
+
+// env_init.c
+bool	is_identifier(const char *s);
+t_map	*init_default_env_in_map(void);
+t_map	*new_map(void);
+t_kv	*new_kv(char *key, char *value);
+void	free_3ptrs(void *ptr1, void *ptr2, void *ptr3);
+
+// env_set.c
+int		separate_str_to_kv(t_map *map, char *str, bool allow_empty_value);
+int		set_kv_in_map(t_map *map, char *key, char *value);
+int		unset_kv_in_map(t_map *map, const char *key);
+
+// env_get.c
+size_t	map_len(t_map *map, bool count_null_value);
+char	*get_key_value_string(t_kv *kv);
+char	*get_kv_value(t_map *map, char *key);
+char	**get_environ(t_map *map);
+
+// builtin.c
+bool	is_builtin(t_node *node);
+int		exec_builtin(t_node *node, t_es *es);
+
+// builtin_exit.c
+int		builtin_exit(char **argv, int *last_status);
+
+// builtin_export.c
+int		builtin_export(char **argv, t_map *env);
+
+// builtin_unset.c
+int		builtin_unset(char **argv, t_map *env);
 
 #endif

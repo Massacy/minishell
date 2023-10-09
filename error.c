@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 04:41:18 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/06 05:35:34 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 19:06:53 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,15 @@ void	assert_error(const char *msg)
 	perror_prefix();
 	ft_dprintf(STDERR_FILENO, "assert Error: %s\n", msg);
 	exit(255);
+}
+
+void	builtin_error(const char *func, const char *str, const char *err)
+{
+	perror_prefix();
+	dprintf(STDERR_FILENO, "%s: ", func);
+	if (str)
+		dprintf(STDERR_FILENO, "`%s': ", str);
+	dprintf(STDERR_FILENO, "%s\n", err);
 }
 
 void	todo(const char *msg)

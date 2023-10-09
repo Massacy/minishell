@@ -1,21 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expand.c                                           :+:      :+:    :+:   */
+/*   expand_variable_param.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/06 05:00:58 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 20:31:16 by imasayos         ###   ########.fr       */
+/*   Created: 2023/10/08 06:31:38 by imasayos          #+#    #+#             */
+/*   Updated: 2023/10/08 06:32:56 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <stdlib.h>
-#include <string.h>
 
-void	expand(t_node *node, t_es *es)
+bool	is_special_parameter(char *s)
 {
-	expand_variable(node, es);
-	expand_quote_removal(node);
+	return (s[0] == '$' && s[1] == '?');
+}
+
+void	expand_special_parameter_str(char **dst, char **rest, char *p,
+		int *last_status)
+{
+	if (!is_special_parameter(p))
+		assert_error("Expected special parameter");
+	p += 2;
+	append_num(dst, *last_status);
+	*rest = p;
 }

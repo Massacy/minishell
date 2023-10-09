@@ -6,12 +6,14 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/01 19:48:04 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/06 06:31:35 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/08 19:34:00 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include <fcntl.h>
+
+extern sig_atomic_t	g_sig;
 
 /* EBNF
 	<program> = <simple_command>
@@ -41,6 +43,11 @@ int	read_heredoc(const char *delimiter)
 		line = readline("> ");
 		if (line == NULL)
 			break ;
+		if (g_sig == SIGINT)
+		{
+			free(line);
+			break;
+		}
 		if (ft_strlen(line) == ft_strlen(delimiter)
 			&& ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0)
 		{
@@ -51,6 +58,12 @@ int	read_heredoc(const char *delimiter)
 		free(line);
 	}
 	close(pipe_fd[1]);
+	if (g_sig == SIGINT)
+	{
+		close(pipe_fd[0]);
+		g_sig = 0;
+		return (-1);
+	}
 	return (pipe_fd[0]);
 }
 
@@ -89,7 +102,9 @@ int	open_redirect_file(t_node *node)
 		assert_error("open_redirect_file");
 	if (node->file_fd < 0)
 	{
-		xperror(node->filename->word);
+		if (node->kind == ND_REDIR_OUT || node->kind == ND_REDIR_APPEND \
+		|| node->kind == ND_REDIR_IN)
+			xperror(node->filename->word);
 		return (-1);
 	}
 	node->target_fd_copy = dup(node->target_fd);
