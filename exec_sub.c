@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 05:49:04 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/08 06:10:23 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/09 17:58:37 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ char	**token_list_to_argv(t_token *tok)
 	i = -1;
 	while (++i < cnt)
 	{
-		argv[i] = cur->word;
+		argv[i] = ft_strdup(cur->word);
 		cur = cur->next;
 	}
 	argv[i] = NULL;
