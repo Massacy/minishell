@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 21:11:10 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/21 19:52:11 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,5 +179,10 @@ int		builtin_export(char **argv, t_map *env);
 
 // builtin_unset.c
 int		builtin_unset(char **argv, t_map *env);
+
+// builtin_env.c
+int		builtin_env(t_map *env);
+
+
 
 #endif

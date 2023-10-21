@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 06:10:55 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 21:26:22 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/21 19:59:25 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@ int		exec_builtin(t_node *node, t_es *es)
 		status = builtin_export(argv, es->env);
 	else if (ft_strlen(argv[0]) == 5 && ft_strncmp(argv[0], "unset", 5) == 0)
 		status = builtin_unset(argv, es->env);
+	else if (ft_strlen(argv[0]) == 3 && ft_strncmp(argv[0], "env", 3) == 0)
+		status = builtin_env(es->env);
+	
 	else
 		todo("exec_builtin");
 	free_argv(argv);
@@ -32,7 +35,7 @@ int		exec_builtin(t_node *node, t_es *es)
 	return (status);
 }
 
-const char		*g_builtin_commands[] = {"exit", "export", "unset"};
+const char		*g_builtin_commands[] = {"exit", "export", "unset", "env"};
 
 bool	is_builtin(t_node *node)
 {
