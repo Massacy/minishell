@@ -16,7 +16,7 @@ SRCS := minishell.c tokenizer.c expand.c parse.c error.c destructor.c redirectio
  expand_variable.c expand_variable_sub.c expand_variable_param.c exec.c exec_sub.c \
  signal.c env_init.c env_set.c env_get.c \
  builtin.c builtin_exit.c builtin_export.c builtin_unset.c \
- builtin_env.c
+ builtin_env.c builtin_cd.c
 
 OBJS := $(patsubst %.c, %.o, $(SRCS))
 
