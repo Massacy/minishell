@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/22 17:11:33 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/22 17:32:18 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/22 18:06:51 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,10 @@ int	builtin_cd(char **argv, t_map *env)
 		home_path = get_kv_value(env, "HOME");
 		if (home_path == NULL)
 			return (builtin_error_with_rtn1("cd", "HOME not found"));
+		ft_strlcpy(target_path, home_path, PATH_MAX);
 	}
-	ft_strlcpy(target_path, argv[1], PATH_MAX);
+	else
+		ft_strlcpy(target_path, argv[1], PATH_MAX);
 	if (chdir(target_path) < 0)
 		return (builtin_error_with_rtn1("cd", "chdir"));
 	if (getcwd(new_pwd, PATH_MAX) == NULL)

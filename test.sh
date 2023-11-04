@@ -254,4 +254,53 @@ assert 'unset hoge nosuch fuga'
 assert 'unset fuga \n export | echo $fuga'
 assert 'unset [invalid] fuga \n echo $fuga'
 
+## env
+print_desc "Output of 'env' differs, but it's ok."
+assert 'env' # order of variables, default variables differs...
+assert 'env | grep hoge | sort'
+
+## cd
+assert 'cd'
+assert 'cd .'
+assert 'cd ..'
+assert 'cd ///'
+assert 'cd /tmp'
+assert 'cd /tmp/'
+assert 'cd /tmp///'
+assert 'cd /../../../././.././'
+assert 'cd src'
+assert 'unset HOME\ncd'
+
+assert 'cd \n echo $PWD'
+assert 'cd \n echo $PWD'
+assert 'cd .\n echo $PWD'
+assert 'cd ..\n echo $PWD'
+assert 'cd ///\n echo $PWD'
+assert 'cd /tmp\n echo $PWD'
+assert 'cd /tmp/\n echo $PWD'
+assert 'cd /tmp///\n echo $PWD'
+assert 'cd /../../../././.././\n echo $PWD'
+assert 'cd src\n echo $PWD'
+assert 'unset HOME\ncd \n echo $PWD'
+
+## echo
+assert 'echo'
+assert 'echo hello'
+assert 'echo hello "    " world'
+assert 'echo -n'
+assert 'echo -n hello'
+assert 'echo -n hello world'
+assert 'echo hello -n'
+
+## pwd
+assert 'pwd'
+assert 'cd\npwd'
+assert 'cd src\npwd'
+assert 'cd /etc\npwd'
+assert 'cd . \n pwd \n echo $PWD $OLDPWD'
+assert 'cd .. \n pwd \n echo $PWD $OLDPWD'
+assert 'cd /// \n pwd \n echo $PWD $OLDPWD'
+assert 'cd /tmp/// \n pwd \n echo $PWD $OLDPWD'
+assert 'unset PWD\npwd\ncd /etc\npwd'
+
 cleanup

@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/22 17:29:35 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/10/22 17:55:03 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,5 +189,7 @@ int		builtin_cd(char **argv, t_map *env);
 // builtin_pwd.c
 int		builtin_pwd(void);
 
+// builtin_echo.c
+int		builtin_echo(char **argv);
 
 #endif

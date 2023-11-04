@@ -6,13 +6,13 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 06:10:55 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/22 17:33:47 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/04 18:47:05 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		exec_builtin(t_node *node, t_es *es)
+int	exec_builtin(t_node *node, t_es *es)
 {
 	int		status;
 	char	**argv;
@@ -31,7 +31,8 @@ int		exec_builtin(t_node *node, t_es *es)
 		status = builtin_cd(argv, es->env);
 	else if (ft_strlen(argv[0]) == 3 && ft_strncmp(argv[0], "pwd", 3) == 0)
 		status = builtin_pwd();
-		
+	else if (ft_strlen(argv[0]) == 4 && ft_strncmp(argv[0], "echo", 4) == 0)
+		status = builtin_echo(argv);
 	else
 		todo("exec_builtin");
 	free_argv(argv);
@@ -39,22 +40,24 @@ int		exec_builtin(t_node *node, t_es *es)
 	return (status);
 }
 
-const char		*g_builtin_commands[] = {"exit", "export", "unset", "env", "cd", "pwd"};
+const char	*g_builtin_commands[] = {"exit", "export", "unset", "env", "cd", \
+	"pwd"};
 
 bool	is_builtin(t_node *node)
 {
 	const char		*cmd_name;
 	unsigned int	i;
 
-	if (node == NULL || node->command == NULL | node->command->args == NULL ||
-			node->command->args->word == NULL)
+	if (node == NULL || node->command == NULL | node->command->args == NULL \
+		||node->command->args->word == NULL)
 		return (false);
 	cmd_name = node->command->args->word;
 	i = 0;
 	while (i < sizeof(g_builtin_commands) / sizeof(*g_builtin_commands))
 	{
-		if (ft_strlen(cmd_name) == ft_strlen(g_builtin_commands[i])
-			&& ft_strncmp(cmd_name, g_builtin_commands[i], ft_strlen(cmd_name)) == 0)
+		if (ft_strlen(cmd_name) == ft_strlen(g_builtin_commands[i]) \
+			&& ft_strncmp(cmd_name, g_builtin_commands[i], \
+			ft_strlen(cmd_name)) == 0)
 			return (true);
 		i++;
 	}
