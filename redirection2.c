@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/01 19:48:04 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/08 19:34:00 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/04 17:59:57 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ extern sig_atomic_t	g_sig;
 	<program> = <simple_command>
 	<simple_command> = <simple_command_element>+
 	<simple_command_element> = <redirect>
-							 | <word>
+								| <word>
 	<redirect> = <redirect_out>
-			   | <redirect_in>
-			   | <redirect_append>
-			   | <redirect_heredoc>
+				| <redirect_in>
+				| <redirect_append>
+				| <redirect_heredoc>
 
 	<redirect_out> = '>' <word>
 	<redirect_in> = '<' <word>
@@ -31,31 +31,41 @@ extern sig_atomic_t	g_sig;
 	<redirect_heredoc> = '<<' <word>
 */
 
-int	read_heredoc(const char *delimiter)
+static int	heredoc_loop(const char *delimiter, int pipe_fd[2])
 {
 	char	*line;
+
+	line = readline("> ");
+	if (line == NULL)
+		return (LOOP_END);
+	if (g_sig == SIGINT)
+	{
+		free(line);
+		return (LOOP_END);
+	}
+	if (ft_strlen(line) == ft_strlen(delimiter) && ft_strncmp(line, delimiter,
+			ft_strlen(delimiter)) == 0)
+	{
+		free(line);
+		return (LOOP_END);
+	}
+	ft_dprintf(pipe_fd[1], "%s\n", line);
+	free(line);
+	return (LOOP_CONTINUE);
+}
+
+int	read_heredoc(const char *delimiter)
+{
 	int		pipe_fd[2];
+	int		end_flag;
 
 	if (pipe(pipe_fd) < 0)
 		fatal_error("pipe");
 	while (1)
 	{
-		line = readline("> ");
-		if (line == NULL)
+		end_flag = heredoc_loop(delimiter, pipe_fd);
+		if (end_flag == LOOP_END)
 			break ;
-		if (g_sig == SIGINT)
-		{
-			free(line);
-			break;
-		}
-		if (ft_strlen(line) == ft_strlen(delimiter)
-			&& ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0)
-		{
-			free(line);
-			break ;
-		}
-		ft_dprintf(pipe_fd[1], "%s\n", line);
-		free(line);
 	}
 	close(pipe_fd[1]);
 	if (g_sig == SIGINT)
@@ -75,10 +85,21 @@ void	operation_file_or_heredoc(t_node *node)
 	else if (node->kind == ND_REDIR_IN)
 		node->file_fd = open(node->filename->word, O_RDONLY);
 	else if (node->kind == ND_REDIR_APPEND)
+	{
+		printf("append test: %s \n", node->filename->word);
 		node->file_fd = open(node->filename->word, \
 			O_CREAT | O_WRONLY | O_APPEND, 0644);
+	}
 	else if (node->kind == ND_REDIR_HEREDOC)
 		node->file_fd = read_heredoc(node->heredoc->word);
+}
+
+static int	node_file_fd_err(t_node *node)
+{
+	if (node->kind == ND_REDIR_OUT || node->kind == ND_REDIR_APPEND \
+		|| node->kind == ND_REDIR_IN)
+		xperror(node->filename->word);
+	return (-1);
 }
 
 int	open_redirect_file(t_node *node)
@@ -101,12 +122,7 @@ int	open_redirect_file(t_node *node)
 	else
 		assert_error("open_redirect_file");
 	if (node->file_fd < 0)
-	{
-		if (node->kind == ND_REDIR_OUT || node->kind == ND_REDIR_APPEND \
-		|| node->kind == ND_REDIR_IN)
-			xperror(node->filename->word);
-		return (-1);
-	}
+		return (node_file_fd_err(node));
 	node->target_fd_copy = dup(node->target_fd);
 	return (open_redirect_file(node->next));
 }

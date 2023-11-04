@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/22 17:55:03 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/04 18:01:04 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,18 @@
 # include "ft_dprintf/ft_dprintf.h"
 # include "libft/libft.h"
 # include "structure.h"
-# include <stdio.h>
 # include <errno.h>
+# include <limits.h>
+# include <stdio.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <signal.h>
 # include <stdbool.h>
-
 # include <stdlib.h>
 # include <string.h>
+# include <sys/ioctl.h>
 # include <sys/types.h>
 # include <unistd.h>
-# include <signal.h>
-# include <sys/ioctl.h>
-# include <limits.h>
 
 # define ERROR_TOKENIZE 258
 # define ERROR_PARSE 258
@@ -37,6 +36,8 @@
 # define SINGLE_QUOTE_CHAR '\''
 # define DOUBLE_QUOTE_CHAR '\"'
 # define PATH_MAX 1024
+# define LOOP_END 10
+# define LOOP_CONTINUE 11
 
 t_token	*tokenize(char *line, bool *syntax_error);
 
@@ -45,7 +46,7 @@ t_token	*tokenize(char *line, bool *syntax_error);
 // exec.c
 int		exec(t_node *node, t_es *es);
 char	*search_path(const char *filename);
-int 	exec_nonbuiltin(t_node *node, t_map *env) __attribute__((noreturn));
+int		exec_nonbuiltin(t_node *node, t_map *env) __attribute__((noreturn));
 
 // exec_sub.c
 void	validate_access(const char *path, const char *filename);
@@ -136,7 +137,6 @@ void	prepare_pipe(t_node *node);
 void	prepare_pipe_child(t_node *node);
 void	prepare_pipe_parent(t_node *node);
 
-
 // ft_strndup.c
 char	*ft_strndup(const char *s1, size_t n);
 
@@ -146,8 +146,8 @@ void	validate_access(const char *path, const char *filename);
 char	**token_list_to_argv(t_token *tok);
 
 // signal.h
-void	setup_signal(void);
-void	reset_signal(void);
+void	setup_signals(void);
+void	reset_signals(void);
 
 // env_init.c
 bool	is_identifier(const char *s);

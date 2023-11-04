@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/22 17:55:47 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/22 17:57:29 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/04 19:05:53 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	builtin_echo(char **argv)
 {
-	int i;
-	bool nflg;
+	int		i;
+	bool	nflg;
 
 	nflg = false;
 	i = 0;

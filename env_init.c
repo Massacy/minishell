@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 22:30:47 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 19:30:57 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/04 16:54:37 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,9 @@ bool	is_identifier(const char *s)
 
 t_map	*init_default_env_in_map(void)
 {
-	
 	extern char	**environ;
-	t_map	*map;
-	int	i;
+	t_map		*map;
+	int			i;
 
 	map = new_map();
 	i = 0;
@@ -55,7 +54,7 @@ t_map	*new_map(void)
 
 t_kv	*new_kv(char *key, char *value)
 {
-	t_kv *kv;
+	t_kv	*kv;
 
 	kv = ft_calloc(1, sizeof(t_kv));
 	if (kv == NULL)
@@ -65,7 +64,7 @@ t_kv	*new_kv(char *key, char *value)
 	return (kv);
 }
 
-void free_3ptrs(void *ptr1, void* ptr2, void *ptr3)
+void	free_3ptrs(void *ptr1, void *ptr2, void *ptr3)
 {
 	free(ptr1);
 	free(ptr2);

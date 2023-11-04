@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/01 17:46:06 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 20:51:11 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/04 19:05:43 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@ typedef struct s_map
 
 typedef struct s_env_and_status
 {
-	t_map	*env;
-	int 	*last_status;
-}			t_es;
+	t_map					*env;
+	int						*last_status;
+}							t_es;
 
 #endif

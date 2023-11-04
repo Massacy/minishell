@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 19:01:56 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 19:04:37 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/04 19:05:15 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ void	print_allenv(t_map *env)
 
 int	builtin_export(char **argv, t_map *env)
 {
-	size_t	i;
 	int		status;
+	size_t	i;
 
 	if (argv[1] == NULL)
 	{

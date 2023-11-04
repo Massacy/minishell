@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 05:43:58 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 20:41:23 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/04 19:07:15 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ char	*search_path(const char *filename)
 	return (NULL);
 }
 
-int exec_nonbuiltin(t_node *node, t_map *env)
+int	exec_nonbuiltin(t_node *node, t_map *env)
 {
 	char		**argv;
 	const char	*path;
@@ -69,7 +69,7 @@ pid_t	exec_pipeline(t_node *node, t_es *es)
 		fatal_error("fork");
 	else if (pid == 0)
 	{
-		reset_signal();
+		reset_signals();
 		prepare_pipe_child(node);
 		if (is_builtin(node))
 			exit(exec_builtin(node, es));
@@ -91,7 +91,7 @@ int	wait_pipeline(pid_t last_pid)
 	while (1)
 	{
 		wait_result = wait(&wstatus);
-		if (wait_result == last_pid)											
+		if (wait_result == last_pid)
 		{
 			if (WIFSIGNALED(wstatus))
 				status = 128 + WTERMSIG(wstatus);
@@ -118,7 +118,7 @@ int	exec(t_node *node, t_es *es)
 
 	if (open_redirect_file(node) < 0)
 		return (ERROR_OPEN_REDIR);
-	if (node->next == NULL && is_builtin(node)) // todo なぜ node->next == NULLのときだけ？
+	if (node->next == NULL && is_builtin(node))
 		status = exec_builtin(node, es);
 	else
 	{

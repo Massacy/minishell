@@ -6,13 +6,13 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 06:01:01 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 20:52:10 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/04 17:50:30 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-extern sig_atomic_t g_sig;
+extern sig_atomic_t	g_sig;
 
 // 子プロセスで*lineに入っているコマンドを実行する。
 void	interpret(char *line, t_es *es)
@@ -51,13 +51,12 @@ int	main(void)
 {
 	char	*prompt;
 	int		exit_status;
-	// t_map	*env;
 	t_es	es;
 
-	rl_outstream = stderr; 
+	rl_outstream = stderr;
 	prompt = NULL;
 	es.env = init_default_env_in_map();
-	setup_signal();
+	setup_signals();
 	es.last_status = &exit_status;
 	exit_status = 0;
 	while (1)

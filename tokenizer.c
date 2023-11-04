@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 20:37:18 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/08 06:26:48 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/04 16:54:11 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,20 @@ bool	consume_blank(char **rest, char *line)
 	return (false);
 }
 
-// static char *const operators[] = {"||", "&", "&&", ";", ";;", "(", ")",
-//	"|", "\n"};
-// unreachable
+static const char	*g_operators[] = {">>", "<<", "||", "&&", ";;", "<", ">",
+	"&", ";", "(", ")", "|", "\n"};
+
 t_token	*operator(char **rest, char *line)
 {
 	size_t	i;
 	char	*op;
-	char	*operators[] = { ">>", "<<", "||", "&&", ";;", "<", ">", \
-		"&", ";", "(", ")", "|", "\n"}; // TODO : ここnormどうしよう
 
 	i = 0;
-	while (i < sizeof(operators) / sizeof(*operators))
+	while (i < sizeof(g_operators) / sizeof(*g_operators))
 	{
-		if (startswith(line, operators[i]))
+		if (startswith(line, g_operators[i]))
 		{
-			op = ft_strdup(operators[i]);
+			op = ft_strdup(g_operators[i]);
 			if (op == NULL)
 				fatal_error("strdup");
 			*rest = line + ft_strlen(op);

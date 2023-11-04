@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 01:13:57 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/04 06:34:03 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/04 16:51:23 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ int	ft_dprintf(int fd, const char *format, ...)
 	va_list	arg_ptr;
 	size_t	cnt;
 	size_t	tmp_cnt;
+
 	va_start(arg_ptr, format);
 	cnt = 0;
 	while (*format != '\0')
@@ -49,7 +50,7 @@ int	ft_dprintf(int fd, const char *format, ...)
 		if (*format == '%')
 		{
 			format++;
-			tmp_cnt = check_format_specifiers(fd,format, &arg_ptr);
+			tmp_cnt = check_format_specifiers(fd, format, &arg_ptr);
 		}
 		else
 			tmp_cnt = write(fd, format, 1);

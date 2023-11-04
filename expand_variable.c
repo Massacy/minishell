@@ -6,13 +6,13 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 04:09:22 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 21:02:06 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/04 19:02:41 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	expand_variable_str(char **dst, char **rest, char *p, t_map *env) 
+void	expand_variable_str(char **dst, char **rest, char *p, t_map *env)
 {
 	char	*name;
 	char	*value;
@@ -25,7 +25,7 @@ void	expand_variable_str(char **dst, char **rest, char *p, t_map *env)
 	p++;
 	if (!is_alpha_under(*p))
 		assert_error("Variable must starts with \
-		alphabetic character or underscore.");
+			alphabetic character or underscore.");
 	append_char(&name, *p++);
 	while (is_alpha_num_under(*p))
 		append_char(&name, *p++);
