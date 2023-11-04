@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/01 19:48:04 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/04 17:59:57 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/04 20:46:36 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ void	operation_file_or_heredoc(t_node *node)
 		node->file_fd = open(node->filename->word, O_RDONLY);
 	else if (node->kind == ND_REDIR_APPEND)
 	{
-		printf("append test: %s \n", node->filename->word);
 		node->file_fd = open(node->filename->word, \
 			O_CREAT | O_WRONLY | O_APPEND, 0644);
 	}
