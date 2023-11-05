@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 05:43:58 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/04 19:07:15 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/05 21:45:14 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ pid_t	exec_pipeline(t_node *node, t_es *es)
 		else
 			exec_nonbuiltin(node, es->env);
 	}
+	setup_signals2();
 	prepare_pipe_parent(node);
 	if (node->next)
 		return (exec_pipeline(node->next, es));

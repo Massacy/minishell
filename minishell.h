@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/04 18:01:04 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/05 23:07:43 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # include <sys/ioctl.h>
 # include <sys/types.h>
 # include <unistd.h>
+# include <sys/stat.h>
 
 # define ERROR_TOKENIZE 258
 # define ERROR_PARSE 258
@@ -140,14 +141,15 @@ void	prepare_pipe_parent(t_node *node);
 // ft_strndup.c
 char	*ft_strndup(const char *s1, size_t n);
 
-// exec_sub.c
-char	*accessible_path(char *path);
-void	validate_access(const char *path, const char *filename);
-char	**token_list_to_argv(t_token *tok);
+// signal.c
+void	handler(int signum);
+void	handler2(int signum);
+void	setup_signal(int signum, void (*handler)(int));
 
-// signal.h
+// signal2.c
 void	setup_signals(void);
 void	reset_signals(void);
+void	setup_signals2(void);
 
 // env_init.c
 bool	is_identifier(const char *s);
