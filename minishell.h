@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/05 23:07:43 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/12 16:48:37 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,7 @@ void	reset_redirect(t_node *redir);
 void	free_node(t_node *node);
 void	free_tok(t_token *tok);
 void	free_argv(char **argv);
+void	free_map(t_map *map);
 
 // pipe.c
 void	prepare_pipe(t_node *node);
@@ -140,6 +141,9 @@ void	prepare_pipe_parent(t_node *node);
 
 // ft_strndup.c
 char	*ft_strndup(const char *s1, size_t n);
+
+// ft_strcmp.c
+int		ft_strcmp(const char *s1, const char *s2);
 
 // signal.c
 void	handler(int signum);

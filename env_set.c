@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 01:57:57 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 20:07:35 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/12 17:05:24 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int	set_kv_in_map(t_map *map, char *key, char *value)
 	while (cur != NULL)
 	{
 		if (ft_strlen(cur->key) == ft_strlen(key)
-			&& ft_strncmp(cur->key, key, ft_strlen(key)) == 0)
+			&& ft_strcmp(cur->key, key) == 0)
 			break ;
 		cur = cur->next;
 	}
@@ -110,7 +110,7 @@ int	unset_kv_in_map(t_map *map, const char *key)
 	while (cur)
 	{
 		if (ft_strlen(cur->key) == ft_strlen(key)
-			&& ft_strncmp(cur->key, key, ft_strlen(key)) == 0)
+			&& ft_strcmp(cur->key, key) == 0)
 		{
 			prev->next = cur->next;
 			free_3ptrs(cur->key, cur->value, cur);

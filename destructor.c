@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 05:00:24 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/06 05:00:29 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/12 17:19:50 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,21 @@ void	free_argv(char **argv)
 		i++;
 	}
 	free(argv);
+}
+
+void	free_map(t_map *map)
+{
+	t_kv	*cur;
+	t_kv	*tmp;
+
+	if (map == NULL)
+		return ;
+	cur = map->kv_head.next;
+	while (cur)
+	{
+		tmp = cur->next;
+		free_3ptrs(cur->key, cur->value, cur);
+		cur = tmp;
+	}
+	free(map);
 }
