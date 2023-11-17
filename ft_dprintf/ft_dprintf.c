@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 01:13:57 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/04 16:51:23 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/18 05:07:59 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	ft_dprintf(int fd, const char *format, ...)
 		else
 			tmp_cnt = write(fd, format, 1);
 		format++;
-		if (tmp_cnt < 0)
+		if (tmp_cnt == (size_t) - 1)
 			return (-1);
 		cnt += tmp_cnt;
 	}

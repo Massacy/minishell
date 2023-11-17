@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 06:10:55 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/04 18:47:05 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/18 05:03:29 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ int	exec_builtin(t_node *node, t_es *es)
 	else
 		todo("exec_builtin");
 	free_argv(argv);
-	reset_redirect(node->command->redirects);
 	return (status);
 }
 

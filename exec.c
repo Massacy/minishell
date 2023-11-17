@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 05:43:58 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/05 21:45:14 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/18 05:00:22 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ int	exec_nonbuiltin(t_node *node, t_map *env)
 	validate_access(path, argv[0]);
 	execve(path, argv, get_environ(env));
 	free_argv(argv);
-	reset_redirect(node->command->redirects);
 	fatal_error("execve");
 }
 
@@ -126,5 +125,6 @@ int	exec(t_node *node, t_es *es)
 		last_pid = exec_pipeline(node, es);
 		status = wait_pipeline(last_pid);
 	}
+	reset_redirect(node->command->redirects);
 	return (status);
 }

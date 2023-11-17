@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 01:59:59 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/09 06:36:54 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/15 03:56:37 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ char	*get_key_value_string(t_kv *kv)
 	s = malloc(strsize);
 	if (s == NULL)
 		fatal_error("malloc");
-	strlcpy(s, kv->key, strsize);
+	ft_strlcpy(s, kv->key, strsize);
 	if (kv->value)
 	{
-		strlcat(s, "=", strsize);
-		strlcat(s, kv->value, strsize);
+		ft_strlcat(s, "=", strsize);
+		ft_strlcat(s, kv->value, strsize);
 	}
 	return (s);
 }
