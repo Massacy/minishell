@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 20:37:18 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/08 06:26:48 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/04 21:18:03 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,20 @@ bool	consume_blank(char **rest, char *line)
 	return (false);
 }
 
-// static char *const operators[] = {"||", "&", "&&", ";", ";;", "(", ")",
-//	"|", "\n"};
-// unreachable
+static const char	*g_operators[] = {">>", "<<", "||", "&&", ";;", "<", ">",
+	"&", ";", "(", ")", "|", "\n"};
+
 t_token	*operator(char **rest, char *line)
 {
 	size_t	i;
 	char	*op;
-	char	*operators[] = { ">>", "<<", "||", "&&", ";;", "<", ">", \
-		"&", ";", "(", ")", "|", "\n"}; // TODO : ここnormどうしよう
 
 	i = 0;
-	while (i < sizeof(operators) / sizeof(*operators))
+	while (i < sizeof(g_operators) / sizeof(*g_operators))
 	{
-		if (startswith(line, operators[i]))
+		if (startswith(line, g_operators[i]))
 		{
-			op = ft_strdup(operators[i]);
+			op = ft_strdup(g_operators[i]);
 			if (op == NULL)
 				fatal_error("strdup");
 			*rest = line + ft_strlen(op);
@@ -57,20 +55,24 @@ t_token	*operator(char **rest, char *line)
 	return (NULL);
 }
 
-static char	*quote_check(char *line, const char c, char *msg)
+static char	*quote_check(char *line, const char c, char *msg,
+		bool *syntax_error)
 {
 	line++;
 	while (*line != c)
 	{
 		if (*line == '\0')
-			todo(msg);
+		{
+			tokenize_error(msg, &line, line, syntax_error);
+			return (line);
+		}
 		line++;
 	}
 	line++;
 	return (line);
 }
 
-t_token	*word(char **rest, char *line)
+t_token	*word(char **rest, char *line, bool *syntax_error)
 {
 	const char	*start;
 	char		*word;
@@ -79,11 +81,11 @@ t_token	*word(char **rest, char *line)
 	while (*line != '\0' && !is_metacharacter(*line))
 	{
 		if (*line == SINGLE_QUOTE_CHAR)
-			line = quote_check(line, SINGLE_QUOTE_CHAR,
-					"Unclosed single quote");
+			line = quote_check(line, SINGLE_QUOTE_CHAR, "Unclosed single quote",
+					syntax_error);
 		else if (*line == DOUBLE_QUOTE_CHAR)
-			line = quote_check(line, DOUBLE_QUOTE_CHAR,
-					"Unclosed double quote");
+			line = quote_check(line, DOUBLE_QUOTE_CHAR, "Unclosed double quote",
+					syntax_error);
 		else
 			line++;
 	}
@@ -112,7 +114,7 @@ t_token	*tokenize(char *line, bool *syntax_error)
 		else if (is_metacharacter(*line))
 			tok->next = operator(&line, line);
 		else if (is_word(line))
-			tok->next = word(&line, line);
+			tok->next = word(&line, line, syntax_error);
 		else
 			tokenize_error("Unexpected Token", &line, line, syntax_error);
 		tok = tok->next;

@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 05:06:00 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/06 06:38:20 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/05 21:46:10 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,7 @@ void	append_cmd_elem(t_node *cmd, t_token **rest, t_token *tok,
 		append_node(&cmd->redirects, redirect_ioah(&tok, tok, ND_REDIR_HEREDOC,
 				STDIN_FILENO));
 	else
-		todo("append_cmd_elem");
-	(void)syntax_error;
+		parse_error("Unexpected Token", &tok, tok, syntax_error);
 	*rest = tok;
 }
 

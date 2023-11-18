@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/01 19:48:04 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/06 05:23:53 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/18 05:05:12 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,13 @@ void	reset_redirect(t_node *redir)
 		return ;
 	reset_redirect(redir->next);
 	if (is_redirect(redir))
+	{
 		dup2(redir->target_fd_copy, redir->target_fd);
+		close(redir->target_fd_copy);
+	}
 	else
 		assert_error("reset_redirect");
+	close(redir->file_fd);
 }
 
 // void redirect(int target_fd, char *filename)

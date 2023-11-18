@@ -6,7 +6,7 @@ RLDIR    = $(shell brew --prefix readline)
 INCLUDES = -I include -I$(RLDIR)/include
 LIBS     = -lreadline -L$(RLDIR)/lib
 CFLAGS   = -Wall -Wextra -Werror $(INCLUDES)
-CFLAGS += -fsanitize=address -g
+# CFLAGS += -fsanitize=address -g
 # CFLAGS := -Wall -Wextra -Werror -fsanitize=thread -g
 # CFLAGS := -Wall -Wextra -Werror -fsanitize=address -g
 # INCLUDES := -I/usr/local/include
@@ -14,8 +14,9 @@ CFLAGS += -fsanitize=address -g
 SRCS := minishell.c tokenizer.c expand.c parse.c error.c destructor.c redirection.c pipe.c \
  error2.c expand2.c parse2.c redirection2.c parse3.c ft_strndup.c tokenizer2.c \
  expand_variable.c expand_variable_sub.c expand_variable_param.c exec.c exec_sub.c \
- signal.c env_init.c env_set.c env_get.c \
- builtin.c builtin_exit.c builtin_export.c builtin_unset.c
+ signal.c signal2.c env_init.c env_set.c env_get.c \
+ builtin.c builtin_exit.c builtin_export.c builtin_unset.c \
+ builtin_env.c builtin_cd.c builtin_pwd.c builtin_echo.c ft_strcmp.c
 
 OBJS := $(patsubst %.c, %.o, $(SRCS))
 
