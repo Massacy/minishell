@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 06:10:55 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/18 05:03:29 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/22 04:16:24 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	exec_builtin(t_node *node, t_es *es)
 }
 
 const char	*g_builtin_commands[] = {"exit", "export", "unset", "env", "cd", \
-	"pwd"};
+	"pwd", "echo"};
 
 bool	is_builtin(t_node *node)
 {
