@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 19:51:32 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/21 20:31:25 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/22 02:47:43 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,5 @@ int	builtin_env(t_map *env)
 		printf("%s=%s\n", cur->key, cur->value);
 		cur = cur->next;
 	}
-	printf("_=/usr/bin/env\n");
 	return (0);
 }
