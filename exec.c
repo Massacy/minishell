@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 05:43:58 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/23 02:41:42 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/23 04:11:33 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,11 @@ int	exec_nonbuiltin(t_node *node, t_map *env)
 	path = argv[0];
 	if (ft_strchr(path, '/') == NULL)
 		path = search_path(path);
-	validate_access(path, argv[0]);
-	execve(path, argv, get_environ(env));
+	validate_access(path, argv[0], argv[1]);
+	if (ft_strcmp(argv[0], ".") == 0)
+		execve(argv[1], argv + 1, get_environ(env));
+	else
+		execve(path, argv, get_environ(env));
 	free_argv(argv);
 	fatal_error("execve");
 }

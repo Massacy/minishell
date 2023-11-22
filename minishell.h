@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/12 16:48:37 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/23 03:43:51 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ char	*search_path(const char *filename);
 int		exec_nonbuiltin(t_node *node, t_map *env) __attribute__((noreturn));
 
 // exec_sub.c
-void	validate_access(const char *path, const char *filename);
+void	validate_access(const char *path, const char *filename, char *arg1);
 char	*accessible_path(char *path);
 char	**token_list_to_argv(t_token *tok);
 
