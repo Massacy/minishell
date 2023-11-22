@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 05:43:58 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/18 05:00:22 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/23 02:41:42 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char	*search_path(const char *filename)
 	char	*end;
 
 	value = getenv("PATH");
-	while (*value)
+	while (value != NULL && *value)
 	{
 		ft_bzero(path, PATH_MAX);
 		end = ft_strchr(value, ':');
