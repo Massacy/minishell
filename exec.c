@@ -6,20 +6,20 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 05:43:58 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/23 04:11:33 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/23 15:05:11 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 // 引数のコマンドが存在するか確かめる。存在して、実行可能ならそのパスを返す。else NULLを返す。
-char	*search_path(const char *filename)
+char	*search_path(const char *filename, t_map *env)
 {
 	char	path[PATH_MAX];
 	char	*value;
 	char	*end;
 
-	value = getenv("PATH");
+	value = get_kv_value(env, "PATH");
 	while (value != NULL && *value)
 	{
 		ft_bzero(path, PATH_MAX);
@@ -48,7 +48,7 @@ int	exec_nonbuiltin(t_node *node, t_map *env)
 	argv = token_list_to_argv(node->command->args);
 	path = argv[0];
 	if (ft_strchr(path, '/') == NULL)
-		path = search_path(path);
+		path = search_path(path, env);
 	validate_access(path, argv[0], argv[1]);
 	if (ft_strcmp(argv[0], ".") == 0)
 		execve(argv[1], argv + 1, get_environ(env));
