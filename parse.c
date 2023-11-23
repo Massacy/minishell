@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 05:06:00 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/05 21:46:10 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/23 19:02:47 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ t_node	*simple_command(t_token **rest, t_token *tok, bool *syntax_error)
 	t_node	*node;
 
 	node = new_node(ND_SIMPLE_CMD);
+	append_cmd_elem(node, &tok, tok, syntax_error);
 	while (tok && !at_eof(tok) && !is_control_operator(tok))
 		append_cmd_elem(node, &tok, tok, syntax_error);
 	*rest = tok;

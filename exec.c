@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 05:43:58 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/23 15:05:11 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/23 19:11:46 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,17 @@ char	*search_path(const char *filename, t_map *env)
 
 int	exec_nonbuiltin(t_node *node, t_map *env)
 {
-	char		**argv;
-	const char	*path;
+	char	**argv;
+	char	*path;
 
 	do_redirect(node->command->redirects);
 	argv = token_list_to_argv(node->command->args);
 	path = argv[0];
+	if (!argv[0])
+		exit(0);
 	if (ft_strchr(path, '/') == NULL)
 		path = search_path(path, env);
-	validate_access(path, argv[0], argv[1]);
+	validate_access(path, argv);
 	if (ft_strcmp(argv[0], ".") == 0)
 		execve(argv[1], argv + 1, get_environ(env));
 	else

@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 05:06:00 by imasayos          #+#    #+#             */
-/*   Updated: 2023/10/06 06:36:22 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/23 15:42:48 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,7 @@ bool	is_word_tok(t_token *tok)
 bool	is_control_operator(t_token *tok)
 {
 	size_t				i;
-	static char *const	operators[] = {"||", "&", "&&", \
-		";", ";;", "(", ")", "|", "\n"};
+	static char *const	operators[] = {"|", "\n"};
 
 	i = 0;
 	while (i < sizeof(operators) / sizeof(*operators))

@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 07:33:25 by imasayos          #+#    #+#             */
-/*   Updated: 2022/09/19 14:48:58 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/23 15:46:15 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ size_t	ft_strlcat(char *dst, const char *src, size_t size)
 	size_t	src_len;
 	size_t	i;
 
+	if (dst == NULL || src == NULL)
+		return (0);
 	src_len = 0;
 	while (src[src_len] != '\0')
 		src_len++;
