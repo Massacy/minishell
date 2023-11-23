@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 04:27:30 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/12 16:48:37 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/23 18:29:07 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ t_token	*tokenize(char *line, bool *syntax_error);
 
 // exec.c
 int		exec(t_node *node, t_es *es);
-char	*search_path(const char *filename);
+char	*search_path(const char *filename, t_map *env);
 int		exec_nonbuiltin(t_node *node, t_map *env) __attribute__((noreturn));
 
 // exec_sub.c
-void	validate_access(const char *path, const char *filename);
+void	validate_access(char *path, char **argv);
 char	*accessible_path(char *path);
 char	**token_list_to_argv(t_token *tok);
 

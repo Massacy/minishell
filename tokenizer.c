@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 20:37:18 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/04 21:18:03 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/23 15:38:07 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,7 @@ bool	consume_blank(char **rest, char *line)
 	return (false);
 }
 
-static const char	*g_operators[] = {">>", "<<", "||", "&&", ";;", "<", ">",
-	"&", ";", "(", ")", "|", "\n"};
+static const char	*g_operators[] = {">>", "<<", "<", ">", "|", "\n"};
 
 t_token	*operator(char **rest, char *line)
 {

@@ -6,11 +6,29 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/22 17:55:47 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/04 19:05:53 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/23 04:12:56 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+bool	is_n_option(char *s)
+{
+	int		i;
+	bool	nflg;
+
+	nflg = false;
+	i = 0;
+	while (s[i] != '\0')
+	{
+		if (s[i] == 'n')
+			nflg = true;
+		else
+			return (false);
+		i++;
+	}
+	return (nflg);
+}
 
 int	builtin_echo(char **argv)
 {
@@ -18,20 +36,23 @@ int	builtin_echo(char **argv)
 	bool	nflg;
 
 	nflg = false;
-	i = 0;
-	if (ft_strlen(argv[1]) == 2 && ft_strncmp(argv[1], "-n", 2) == 0)
+	i = 1;
+	while (argv[i] != NULL && argv[i][0] == '-')
 	{
-		nflg = true;
+		if (is_n_option(argv[i] + 1))
+			nflg = true;
+		else
+			break ;
 		i++;
 	}
 	while (argv[i] != NULL)
 	{
-		printf("%s", argv[i]);
+		ft_dprintf(1, "%s", argv[i]);
 		i++;
 		if (argv[i] != NULL)
-			printf(" ");
+			ft_dprintf(1, " ");
 	}
 	if (!nflg)
-		printf("\n");
+		ft_dprintf(1, "\n");
 	return (0);
 }

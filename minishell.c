@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 06:01:01 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/05 22:32:31 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/23 19:02:25 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 extern sig_atomic_t	g_sig;
 
-// 子プロセスで*lineに入っているコマンドを実行する。
 void	interpret(char *line, t_es *es)
 {
 	t_token	*tok;

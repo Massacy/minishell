@@ -6,7 +6,7 @@
 /*   By: imasayos <imasayos@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/08 05:49:04 by imasayos          #+#    #+#             */
-/*   Updated: 2023/11/05 23:19:04 by imasayos         ###   ########.fr       */
+/*   Updated: 2023/11/23 19:12:31 by imasayos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,34 @@ char	*accessible_path(char *path)
 	return (dup);
 }
 
-void	validate_access(const char *path, const char *filename)
+static int	count_argv(char **argv)
+{
+	int	cnt;
+
+	cnt = 0;
+	while (argv[cnt] != NULL)
+		cnt++;
+	return (cnt);
+}
+
+void	validate_access(char *path, char **argv)
 {
 	struct stat	st;
+	char		*filename;
+	int			argc;
 
-	if (path == NULL || ft_strncmp(filename, "", 1) == 0 \
-		|| ft_strncmp(filename, ".", 1) == 0 \
-		|| ft_strncmp(filename, "..", 2) == 0)
+	filename = argv[0];
+	argc = count_argv(argv);
+	if (path == NULL || ft_strcmp(filename, "") == 0 || ft_strcmp(filename,
+			"..") == 0)
 		err_exit(filename, "command not found", 127);
+	if (ft_strcmp(filename, ".") == 0 && argc == 1)
+		err_exit(filename, "filename argument required", 2);
 	if (access(path, F_OK) < 0)
 		err_exit(filename, "No such file or directory", 127);
 	if (stat(path, &st) < 0)
 		fatal_error("fstat");
-	if (S_ISDIR(st.st_mode))
+	if (ft_strcmp(filename, ".") != 0 && S_ISDIR(st.st_mode))
 		err_exit(filename, "is a directory", 126);
 	if (access(path, X_OK) < 0)
 		err_exit(filename, "Permission denied", 126);
